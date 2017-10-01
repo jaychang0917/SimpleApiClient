@@ -171,7 +171,8 @@ githubApi.getUsers("google")
 ```
 
 ## <a name=auto_cancel>Auto Call Cancellation</a>
-To avoid leaking context, we should cancel the executing api request. Thanks to [AutoDispose](https://github.com/uber/AutoDispose), it is just a line of code.
+To avoid leaking context, we should cancel the executing api request when leave the context. Thanks to [AutoDispose](https://github.com/uber/AutoDispose), it is just a line of code to fix it. The api call will be cancelled automatically in corresponding lifecycle callback. For instance, an api call is made in `onStart()`, it be will cancelled automatically in `onStop`.
+
 ```java
 githubApi.getUsers("google")
   .autoDispose(this)
