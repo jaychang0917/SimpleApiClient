@@ -1,5 +1,6 @@
 # SimpleApiClient
 [![Release](https://jitpack.io/v/jaychang0917/SimpleApiClient.svg)](https://jitpack.io/#jaychang0917/SimpleApiClient)
+[![Android Weekly](http://img.shields.io/badge/Android%20Weekly-%23277-2CB3E5.svg)](http://androidweekly.net/issues/issue-277)
 
 A retrofit extension written in kotlin
 
