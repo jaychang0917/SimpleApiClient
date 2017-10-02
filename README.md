@@ -68,7 +68,7 @@ interface GithubApi {
 ````
 
 ### Step 2
-Use `observe()` to enqueue the call, do your stuff in corresponding parameter block. All blocks are run at android main thread by default and they are optional.
+Use `observe()` to enqueue the call, do your stuff in corresponding parameter block. All blocks are run on android main thread by default and they are optional.
 ```java
 githubApi.getUsers("google")
   .observe(
