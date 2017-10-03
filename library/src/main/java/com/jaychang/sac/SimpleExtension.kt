@@ -2,10 +2,14 @@ package com.jaychang.sac
 
 import android.arch.lifecycle.LifecycleOwner
 import android.view.View
-import com.jaychang.sac.autodispose.*
-import com.uber.autodispose.ObservableScoper
+import com.jaychang.sac.autodispose.AutoDisposeLifecycleOwnerProxy
+import com.jaychang.sac.autodispose.AutoDisposeLifecycleOwnerProxyImpl
+import com.jaychang.sac.autodispose.AutoDisposeViewProxy
+import com.jaychang.sac.autodispose.AutoDisposeViewProxyImpl
+import com.uber.autodispose.AutoDispose
 import com.uber.autodispose.ObservableSubscribeProxy
 import com.uber.autodispose.android.ViewScopeProvider
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.disposables.Disposable
@@ -61,13 +65,13 @@ fun <T> Observable<T>.autoDispose(view: View): AutoDisposeViewProxy<T> {
 
 fun <T> AutoDisposeLifecycleOwnerProxy<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Disposable {
   return sourceObservable.doOnSubscribe { onStart() }.doFinally { onEnd() }
-    .to<ObservableSubscribeProxy<T>>(ObservableScoper<T>(AndroidLifecycleScopeProvider.from(lifecycleOwner)))
+    .to<ObservableSubscribeProxy<T>>(AutoDispose.with(AndroidLifecycleScopeProvider.from(lifecycleOwner)).forObservable())
     .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError))
 }
 
 fun <T> AutoDisposeViewProxy<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Disposable {
   return sourceObservable.doOnSubscribe { onStart() }.doFinally { onEnd() }
-    .to<ObservableSubscribeProxy<T>>(ObservableScoper<T>(ViewScopeProvider.from(view)))
+    .to<ObservableSubscribeProxy<T>>(AutoDispose.with(ViewScopeProvider.from(view)).forObservable())
     .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError))
 }
 
