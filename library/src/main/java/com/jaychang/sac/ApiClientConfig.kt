@@ -11,5 +11,6 @@ data class ApiClientConfig(
   var defaultParameters: Map<String, String>? = null,
   var errorClass: KClass<*>? = null,
   var apiClass: KClass<*>? = null,
-  var errorHandler: ((Throwable) -> Unit)? = null
+  var errorHandler: ((Throwable) -> Unit)? = null,
+  var certificatePins: List<CertificatePin>? = null
 )

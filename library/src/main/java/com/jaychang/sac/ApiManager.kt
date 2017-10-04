@@ -12,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
+import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -30,7 +31,11 @@ object ApiManager {
     RxJavaPlugins.setErrorHandler {
       when (it){
         is CompositeException -> {
-          config.errorHandler?.invoke(it.exceptions[1])
+          if (it.exceptions.size >= 2) {
+            config.errorHandler?.invoke(it.exceptions[1])
+          } else {
+            config.errorHandler?.invoke(it.exceptions[0])
+          }
         }
       }
     }
@@ -50,6 +55,22 @@ object ApiManager {
 
     config.defaultHeaders?.let {
       builder.addInterceptor(HeaderInterceptor(it))
+    }
+
+    config.certificatePins?.let {
+      if (it.isEmpty()) {
+        return@let
+      }
+      val pinBuilder = CertificatePinner.Builder()
+      for (pin in it) {
+        pin.sha1PublicKeyHash?.let {
+          pinBuilder.add(pin.hostname, pin.toString())
+        }
+        pin.sha256PublicKeyHash?.let {
+          pinBuilder.add(pin.hostname, pin.toString())
+        }
+      }
+      builder.certificatePinner(pinBuilder.build())
     }
 
     builder

@@ -2,10 +2,7 @@ package com.jaychang.sac.demo
 
 import android.net.Uri
 import com.google.gson.annotations.SerializedName
-import com.jaychang.sac.AuthenticationError
-import com.jaychang.sac.SimpleApiClient
-import com.jaychang.sac.SimpleApiError
-import com.jaychang.sac.SimpleApiResult
+import com.jaychang.sac.*
 import com.jaychang.sac.annotations.Image
 import com.jaychang.sac.annotations.Unwrap
 import com.jaychang.sac.demo.model.Repo
@@ -36,9 +33,17 @@ interface GithubApi {
         connectTimeout = TimeUnit.MINUTES.toMillis(1)
         readTimeout = TimeUnit.MINUTES.toMillis(1)
         writeTimeout = TimeUnit.MINUTES.toMillis(1)
+        certificatePins = listOf(
+          CertificatePin(hostname = "api.foo.com", sha1PublicKeyHash = "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
+          CertificatePin(hostname = "api.bar.com", sha256PublicKeyHash = "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9")
+        )
         errorHandler = { error ->
-          if (error is AuthenticationError) {
-            println("handle auth error")
+          when (error) {
+            is AuthenticationError -> {}
+            is ClientError -> {}
+            is ServerError -> {}
+            is NetworkError -> {}
+            is SSLError -> {}
           }
         }
       }

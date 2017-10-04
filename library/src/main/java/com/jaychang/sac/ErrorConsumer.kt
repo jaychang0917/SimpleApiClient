@@ -3,6 +3,7 @@ package com.jaychang.sac
 import io.reactivex.functions.Consumer
 import retrofit2.HttpException
 import java.net.UnknownHostException
+import javax.net.ssl.SSLPeerUnverifiedException
 import kotlin.properties.Delegates
 
 internal class ErrorConsumer<T : Throwable>(private val handler: (Throwable) -> Unit) : Consumer<T> {
@@ -20,7 +21,10 @@ internal class ErrorConsumer<T : Throwable>(private val handler: (Throwable) -> 
         }
       }
       is UnknownHostException -> {
-        result = NetworkError(cause = error)
+        result = NetworkError(source = error)
+      }
+      is SSLPeerUnverifiedException -> {
+        result = SSLError(source = error)
       }
       else -> {
         result = error
