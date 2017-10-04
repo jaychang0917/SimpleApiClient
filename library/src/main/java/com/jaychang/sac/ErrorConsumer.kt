@@ -20,7 +20,7 @@ internal class ErrorConsumer<T : Throwable>(private val handler: (Throwable) -> 
         }
       }
       is UnknownHostException -> {
-        result = NetworkError()
+        result = NetworkError(cause = error)
       }
       else -> {
         result = error
