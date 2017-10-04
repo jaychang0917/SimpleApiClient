@@ -56,7 +56,12 @@ interface GithubApi {
         readTimeout = TimeUnit.MINUTES.toMillis(1)
         writeTimeout = TimeUnit.MINUTES.toMillis(1)
         errorHandler = { error ->
-          // handle error
+          when (error) {
+            is AuthenticationError -> {...}
+            is ClientError -> {...}
+            is ServerError -> {...}
+            is NetworkError -> {...}
+          }
         }
       }
   }
