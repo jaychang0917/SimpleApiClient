@@ -57,10 +57,10 @@ interface GithubApi {
         writeTimeout = TimeUnit.MINUTES.toMillis(1)
         errorHandler = { error ->
           when (error) {
-            is AuthenticationError -> {}
-            is ClientError -> {}
-            is ServerError -> {}
-            is NetworkError -> {}
+            is AuthenticationError -> {...}
+            is ClientError -> {...}
+            is ServerError -> {...}
+            is NetworkError -> {...}
           }
         }
       }
