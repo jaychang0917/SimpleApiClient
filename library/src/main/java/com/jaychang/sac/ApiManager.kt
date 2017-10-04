@@ -14,6 +14,7 @@ import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -45,9 +46,13 @@ object ApiManager {
   private fun createOkHttpClient(config: ApiClientConfig): OkHttpClient {
     val builder = OkHttpClient.Builder()
 
-    if (BuildConfig.DEBUG) {
+    if (config.enableStetho) {
       builder.addNetworkInterceptor(StethoInterceptor())
     }
+
+    val httpLoggingInterceptor = HttpLoggingInterceptor()
+    httpLoggingInterceptor.level = config.logLevel
+    builder.addInterceptor(httpLoggingInterceptor)
 
     config.defaultParameters?.let {
       builder.addInterceptor(ParameterInterceptor(it))
