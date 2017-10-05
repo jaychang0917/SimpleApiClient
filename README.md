@@ -170,7 +170,7 @@ SimpleApiClient.all(
 SimpleApiClient.all(
   githubApi.getUsers("google"),
   githubApi.getRepo("google", "gson")
-).then { array -> //array[0] is List<User>, array[1] is Repo
+).then { array -> // the return type is Array<Any>, you should cast them, e.g. val users = array[0] as List<User>
   githubApi.getUsers("google")
 }.observe(...)
 ```
