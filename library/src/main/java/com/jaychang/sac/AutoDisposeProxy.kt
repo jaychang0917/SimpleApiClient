@@ -1,4 +1,4 @@
-package com.jaychang.sac.autodispose
+package com.jaychang.sac
 
 import android.arch.lifecycle.LifecycleOwner
 import android.view.View

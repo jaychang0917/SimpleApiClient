@@ -2,17 +2,12 @@ package com.jaychang.sac
 
 import android.arch.lifecycle.LifecycleOwner
 import android.view.View
-import com.jaychang.sac.autodispose.AutoDisposeLifecycleOwnerProxy
-import com.jaychang.sac.autodispose.AutoDisposeLifecycleOwnerProxyImpl
-import com.jaychang.sac.autodispose.AutoDisposeViewProxy
-import com.jaychang.sac.autodispose.AutoDisposeViewProxyImpl
 import com.uber.autodispose.AutoDispose
 import com.uber.autodispose.ObservableSubscribeProxy
 import com.uber.autodispose.android.ViewScopeProvider
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
-import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
 import java.util.concurrent.TimeUnit
@@ -63,19 +58,19 @@ fun <T> Observable<T>.autoCancel(view: View): AutoDisposeViewProxy<T> {
   return AutoDisposeViewProxyImpl(this, view)
 }
 
-fun <T> AutoDisposeLifecycleOwnerProxy<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Disposable {
-  return sourceObservable.doOnSubscribe { onStart() }.doFinally { onEnd() }
+fun <T> AutoDisposeLifecycleOwnerProxy<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Cancellable {
+  return Cancellable(sourceObservable.doOnSubscribe { onStart() }.doFinally { onEnd() }
     .to<ObservableSubscribeProxy<T>>(AutoDispose.with(AndroidLifecycleScopeProvider.from(lifecycleOwner)).forObservable())
-    .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError))
+    .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError)))
 }
 
-fun <T> AutoDisposeViewProxy<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Disposable {
-  return sourceObservable.doOnSubscribe { onStart() }.doFinally { onEnd() }
+fun <T> AutoDisposeViewProxy<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Cancellable {
+  return Cancellable(sourceObservable.doOnSubscribe { onStart() }.doFinally { onEnd() }
     .to<ObservableSubscribeProxy<T>>(AutoDispose.with(ViewScopeProvider.from(view)).forObservable())
-    .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError))
+    .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError)))
 }
 
-fun <T> Observable<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Disposable {
-  return doOnSubscribe { onStart() }.doFinally { onEnd() }
-    .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError))
+fun <T> Observable<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Cancellable {
+  return Cancellable(doOnSubscribe { onStart() }.doFinally { onEnd() }
+    .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError)))
 }
