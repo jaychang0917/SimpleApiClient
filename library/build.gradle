@@ -5,11 +5,12 @@ apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.jaychang0917'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+    compileSdkVersion globalConfiguration["androidCompileSdkVersion"]
+    buildToolsVersion globalConfiguration["androidBuildToolsVersion"]
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 26
+        minSdkVersion globalConfiguration["androidMinSdkVersion"]
+        targetSdkVersion globalConfiguration["androidTargetSdkVersion"]
         versionCode 1
         versionName "1.0"
     }
@@ -34,4 +35,26 @@ dependencies {
     compile 'com.facebook.stetho:stetho:1.5.0'
     compile 'com.facebook.stetho:stetho-okhttp3:1.5.0'
     compile 'com.uber.autodispose:autodispose-android:0.2.0'
+
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def commonDependencies = rootProject.ext.commonDependencies
+    implementation commonDependencies.appCompat
+    implementation commonDependencies.uberAutodispose
+    implementation commonDependencies.kotlinLib
+
+    def retrofitDependencies = rootProject.ext.retrofitDependencies
+    implementation retrofitDependencies.retrofit
+    implementation retrofitDependencies.retrofitConverterGson
+    implementation retrofitDependencies.retrofitRxjavaAdapterLib
+    implementation retrofitDependencies.gson
+
+    def rxJavaDependencies = rootProject.ext.rxJavaDependencies
+    implementation rxJavaDependencies.rxjavaLib
+    implementation rxJavaDependencies.rxandroidLib
+
+    def facebookDependencies = rootProject.ext.facebookDependencies
+    implementation facebookDependencies.stethoLib
+    implementation facebookDependencies.stethoOkkhttpLib
 }
