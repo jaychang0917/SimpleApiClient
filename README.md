@@ -202,7 +202,7 @@ call.cancel()
 ```
 
 ## <a name=mock_data>Mock Data</a>
-To make the api return mock data, set `ApiClientConfig.isMockDataEnabled` to `true` and annotate it with `@MockData(file)`.
+To make the api return mock data, set `ApiClientConfig.isMockDataEnabled` to `true` and annotate the api with `@MockData(file)`.
 ```kotlin
 @GET("/repos/{user}/{repo}")
 @MockData(R.raw.get_repo)
