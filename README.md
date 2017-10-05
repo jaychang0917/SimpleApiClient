@@ -38,7 +38,7 @@ dependencies {
 ## <a name=basic_usage>Basic Usage</a>
 ### Step 1
 Configurate the api client and use it to create your api. `ApiError` is the error response model. You can centralize the handling of general error like 403 authentication in `errorHandler` block.
-```java
+```kotlin
 class ApiError : SimpleApiError {
   @SerializedName("message")
   override lateinit var message: String
@@ -81,7 +81,7 @@ interface GithubApi {
 
 ### Step 2
 Use `observe()` to enqueue the call, do your stuff in corresponding parameter block. All blocks are run on android main thread by default and they are optional.
-```java
+```kotlin
 githubApi.getUsers("google")
   .observe(
     onStart = { println("show loading") },
@@ -112,7 +112,7 @@ Assuming the response json looks like the following:
 ```
 And you only want the `items` part, we can use `@Unwrap(ApiResult::class)` annotation to indicate that the return type is a unwrapped type of `ApiResult`,
 which is `List<User>` in this case.
-```java
+```kotlin
 class ApiResult<T: Any>: SimpleApiResult<T> {
   @SerializedName("items")
   override lateinit var result: T
@@ -125,7 +125,7 @@ fun getUsers(@Query("q") query: String): Observable<List<User>>
 
 ## <a name=image>Convert Uri to MultiPartBody</a>
 Use `@Image("key")` to annotate a `Uri` or `ArrayList<Uri>` that is going to be converted to `MultiPartBody`
-```java
+```kotlin
 @POST("/upload")
 fun uploadPhoto(@Body @Image("image") file: Uri): Observable<ResponseBody>
 
@@ -133,21 +133,21 @@ fun uploadPhoto(@Body @Image("image") file: Uri): Observable<ResponseBody>
 fun uploadPhotos(@Body @Image("image") files: ArrayList<Uri>): Observable<ResponseBody>
 ```
 
-```java
+```kotlin
 githubApi.uploadPhoto(uri)
   .observe(...)
 ```
 
 ## <a name=serial_parallel_calls>Serial / Parallel Calls</a>
 ### Serial
-```java
+```kotlin
 githubApi.getUsers("google")
   .then { users -> githubApi.getRepo("google", "gson") }
   .observe(...)
 ```
 
 ### Serial then Parallel
-```java
+```kotlin
 githubApi.getUsers("google")
   .then { users -> githubApi.getRepo("google", "gson") }
   .thenAll( repo ->
@@ -158,7 +158,7 @@ githubApi.getUsers("google")
 ```
 
 ### Parallel
-```java
+```kotlin
 SimpleApiClient.all(
   githubApi.getUsers("google"),
   githubApi.getRepo("google", "gson")
@@ -166,7 +166,7 @@ SimpleApiClient.all(
 ```
 
 ### Parallel then Serial
-```java
+```kotlin
 SimpleApiClient.all(
   githubApi.getUsers("google"),
   githubApi.getRepo("google", "gson")
@@ -176,7 +176,7 @@ SimpleApiClient.all(
 ```
 
 ## <a name=retry>Retry Interval / Exponential backoff</a>
-```java
+```kotlin
 githubApi.getUsers("google")
   .retryInterval(maxRetryCount = 3, delaySeconds = 5) // retry up to 3 times, each time delays 5 seconds
   .retryExponential(maxRetryCount = 3, delaySeconds = 5) // retry up to 3 times, each time delays 5^n seconds, where n = {1,2,3}
@@ -187,13 +187,13 @@ githubApi.getUsers("google")
 ### Auto Call Cancellation
 To avoid leaking context, we should cancel the executing api request when leave the context. Thanks to [AutoDispose](https://github.com/uber/AutoDispose), it is just a line of code to fix it. The api call will be cancelled automatically in corresponding lifecycle callback. For instance, an api call is made in `onStart()`, it be will cancelled automatically in `onStop`.
 
-```java
+```kotlin
 githubApi.getUsers("google")
   .autoCancel(this)
   .observe(...)
 ```
 ### Cancel call manually
-```java
+```kotlin
 val call = githubApi.getUsers("google").observe(...)
 
 call.cancel()
