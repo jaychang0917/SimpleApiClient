@@ -142,15 +142,15 @@ githubApi.uploadPhoto(uri)
 ### Serial
 ```java
 githubApi.getUsers("google")
-  .then { githubApi.getRepo("google", "gson") }
+  .then { users -> githubApi.getRepo("google", "gson") }
   .observe(...)
 ```
 
 ### Serial then Parallel
 ```java
 githubApi.getUsers("google")
-  .then { githubApi.getRepo("google", "gson") }
-  .thenAll(
+  .then { users -> githubApi.getRepo("google", "gson") }
+  .thenAll( repo ->
     githubApi.getUsers("ReactiveX"),
     githubApi.getRepo("ReactiveX", "RxJava")
   )
@@ -170,7 +170,7 @@ SimpleApiClient.all(
 SimpleApiClient.all(
   githubApi.getUsers("google"),
   githubApi.getRepo("google", "gson")
-).then {
+).then { array -> //array[0] is List<User>, array[1] is Repo
   githubApi.getUsers("google")
 }.observe(...)
 ```
