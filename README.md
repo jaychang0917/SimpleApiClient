@@ -10,7 +10,7 @@ A retrofit extension written in kotlin
 * [Convert Uri to MultiPartBody](#image)
 * [Serial / Parallel Calls](#serial_parallel_calls)
 * [Retry Interval / Exponential backoff](#retry)
-* [Auto Call Cancellation](#auto_cancel)
+* [Call Cancellation](#call_cancel)
 
 ## Installation
 In your project level build.gradle :
@@ -183,13 +183,20 @@ githubApi.getUsers("google")
   .observe(...)
 ```
 
-## <a name=auto_cancel>Auto Call Cancellation</a>
+## <a name=call_cancel>Call Cancellation</a>
+### Auto Call Cancellation
 To avoid leaking context, we should cancel the executing api request when leave the context. Thanks to [AutoDispose](https://github.com/uber/AutoDispose), it is just a line of code to fix it. The api call will be cancelled automatically in corresponding lifecycle callback. For instance, an api call is made in `onStart()`, it be will cancelled automatically in `onStop`.
 
 ```java
 githubApi.getUsers("google")
   .autoCancel(this)
   .observe(...)
+```
+### Cancel call manually
+```java
+val call = githubApi.getUsers("google").observe(...)
+
+call.cancel()
 ```
 
 ## License
