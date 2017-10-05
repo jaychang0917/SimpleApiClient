@@ -188,7 +188,7 @@ To avoid leaking context, we should cancel the executing api request when leave 
 
 ```java
 githubApi.getUsers("google")
-  .autoDispose(this)
+  .autoCancel(this)
   .observe(...)
 ```
 

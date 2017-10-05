@@ -55,11 +55,11 @@ fun <T> Observable<T>.retryInterval(maxRetryCount: Int = Int.MAX_VALUE, delaySec
   }
 }
 
-fun <T> Observable<T>.autoDispose(lifecycleOwner: LifecycleOwner): AutoDisposeLifecycleOwnerProxy<T> {
+fun <T> Observable<T>.autoCancel(lifecycleOwner: LifecycleOwner): AutoDisposeLifecycleOwnerProxy<T> {
   return AutoDisposeLifecycleOwnerProxyImpl(this, lifecycleOwner)
 }
 
-fun <T> Observable<T>.autoDispose(view: View): AutoDisposeViewProxy<T> {
+fun <T> Observable<T>.autoCancel(view: View): AutoDisposeViewProxy<T> {
   return AutoDisposeViewProxyImpl(this, view)
 }
 
