@@ -11,6 +11,7 @@ A retrofit extension written in kotlin
 * [Serial / Parallel Calls](#serial_parallel_calls)
 * [Retry Interval / Exponential backoff](#retry)
 * [Call Cancellation](#call_cancel)
+* [Mock Data](#mock_data)
 
 ## Installation
 In your project level build.gradle :
@@ -57,6 +58,7 @@ interface GithubApi {
         writeTimeout = TimeUnit.MINUTES.toMillis(1)
         enableStetho = true // default true
         logLevel = LogLevel.BASIC // default NONE
+        isMockDataEnabled = true // default false
         certificatePins = listOf(
           CertificatePin(hostname = "api.foo.com", sha1PublicKeyHash = "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
           CertificatePin(hostname = "api.bar.com", sha256PublicKeyHash = "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9")
@@ -198,6 +200,15 @@ val call = githubApi.getUsers("google").observe(...)
 
 call.cancel()
 ```
+
+## <a name=mock_data>Mock Data</a>
+To make the api return mock data, set `ApiClientConfig.isMockDataEnabled` to `true` and annotate it with `@MockData(file)`.
+```kotlin
+@GET("/repos/{user}/{repo}")
+@MockData(R.raw.get_repo)
+fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Observable<Repo>
+```
+
 
 ## License
 ```
