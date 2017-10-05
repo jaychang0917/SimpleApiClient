@@ -1,5 +1,6 @@
 package com.jaychang.sac
 
+import android.content.Context
 import okhttp3.logging.HttpLoggingInterceptor
 import kotlin.reflect.KClass
 
@@ -16,6 +17,8 @@ data class ApiClientConfig(
   var apiClass: KClass<*>? = null,
   var errorHandler: ((Throwable) -> Unit)? = null,
   var certificatePins: List<CertificatePin>? = null,
-  var enableStetho: Boolean = true,
-  var logLevel: LogLevel = LogLevel.NONE
+  var isStethoEnabled: Boolean = true,
+  var logLevel: LogLevel = LogLevel.NONE,
+  var context: Context? = null,
+  var isMockDataEnabled: Boolean = false
 )

@@ -1,9 +1,11 @@
 package com.jaychang.sac.demo
 
+import android.content.Context
 import android.net.Uri
 import com.google.gson.annotations.SerializedName
 import com.jaychang.sac.*
 import com.jaychang.sac.annotations.Image
+import com.jaychang.sac.annotations.MockData
 import com.jaychang.sac.annotations.Unwrap
 import com.jaychang.sac.demo.model.Repo
 import com.jaychang.sac.demo.model.User
@@ -25,16 +27,17 @@ class ApiError : SimpleApiError {
 interface GithubApi {
 
   companion object {
-    fun create() : GithubApi =
-      SimpleApiClient.create<GithubApi, ApiError> {
+    fun create(context: Context) : GithubApi =
+      SimpleApiClient.create<GithubApi, ApiError>(context) {
         baseUrl = "https://api.github.com"
         defaultParameters = mapOf()
         defaultHeaders = mapOf()
         connectTimeout = TimeUnit.MINUTES.toMillis(1)
         readTimeout = TimeUnit.MINUTES.toMillis(1)
         writeTimeout = TimeUnit.MINUTES.toMillis(1)
-        enableStetho = true // default true
+        isStethoEnabled = true // default true
         logLevel = LogLevel.BASIC // default NONE
+        isMockDataEnabled = true // default false
         certificatePins = listOf(
           CertificatePin(hostname = "api.foo.com", sha1PublicKeyHash = "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
           CertificatePin(hostname = "api.bar.com", sha256PublicKeyHash = "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9")
@@ -51,8 +54,9 @@ interface GithubApi {
       }
   }
 
-  @GET("/search/users")
+  @GET("/sample/search/users")
   @Unwrap(ApiResult::class)
+  @MockData(R.raw.get_users)
   fun getUsers(@Query("q") query: String): Observable<List<User>>
 
   @GET("/repos/{user}/{repo}")

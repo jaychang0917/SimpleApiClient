@@ -19,7 +19,9 @@ class WrappedResponseConverterFactory : Converter.Factory() {
 
   override fun responseBodyConverter(type: Type, annotations: Array<out Annotation>, retrofit: Retrofit): Converter<ResponseBody, *>? {
     // if the response type is not annotated @Unwrap, delegate to next converter
-    if (annotations.none { it is Unwrap }) return null
+    if (annotations.none { it is Unwrap }) {
+      return null
+    }
 
     val wrappedType = annotations.find { it is Unwrap } as Unwrap
 

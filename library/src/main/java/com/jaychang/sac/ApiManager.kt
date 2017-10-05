@@ -3,10 +3,13 @@ package com.jaychang.sac
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.jaychang.sac.calladapter.MockDataAdapterFactory
 import com.jaychang.sac.calladapter.ObserveOnCallAdapterFactory
 import com.jaychang.sac.converter.ImageConverterFactory
+import com.jaychang.sac.converter.MockDataConverterFactory
 import com.jaychang.sac.converter.WrappedResponseConverterFactory
 import com.jaychang.sac.interceptor.HeaderInterceptor
+import com.jaychang.sac.interceptor.MockDataInterceptor
 import com.jaychang.sac.interceptor.ParameterInterceptor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
@@ -14,6 +17,7 @@ import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -22,8 +26,15 @@ import java.util.concurrent.TimeUnit
 
 object ApiManager {
 
+  class MockDataApis : HashSet<String>() {
+    private fun toKey(request: Request) = request.url().toString() + request.method()
+    fun hasApi(request: Request) = contains(toKey(request))
+    fun addApi(request: Request) = add(toKey(request))
+  }
+
   lateinit var gson: Gson
   lateinit var apiErrorClass: Class<*>
+  private val mockDataApis = MockDataApis()
 
   fun init(config: ApiClientConfig,
            apiErrorClass: Class<*>): Retrofit {
@@ -46,7 +57,7 @@ object ApiManager {
   private fun createOkHttpClient(config: ApiClientConfig): OkHttpClient {
     val builder = OkHttpClient.Builder()
 
-    if (config.enableStetho) {
+    if (config.isStethoEnabled) {
       builder.addNetworkInterceptor(StethoInterceptor())
     }
 
@@ -78,6 +89,10 @@ object ApiManager {
       builder.certificatePinner(pinBuilder.build())
     }
 
+    if (config.isMockDataEnabled) {
+      builder.addInterceptor(MockDataInterceptor(mockDataApis))
+    }
+
     builder
       .connectTimeout(config.connectTimeout, TimeUnit.MILLISECONDS)
       .readTimeout(config.readTimeout, TimeUnit.MILLISECONDS)
@@ -87,15 +102,17 @@ object ApiManager {
   }
 
   private fun createGson(): Gson {
-    return GsonBuilder().setPrettyPrinting().create()
+    return GsonBuilder().setPrettyPrinting().setLenient().create()
   }
 
   private fun createRetrofit(config: ApiClientConfig, client: OkHttpClient): Retrofit {
     return Retrofit.Builder()
       .baseUrl(config.baseUrl).client(client)
+      .addConverterFactory(MockDataConverterFactory.create(config.context!!))
       .addConverterFactory(WrappedResponseConverterFactory.create())
       .addConverterFactory(ImageConverterFactory.create())
       .addConverterFactory(GsonConverterFactory.create(gson))
+      .addCallAdapterFactory(MockDataAdapterFactory.create(mockDataApis))
       .addCallAdapterFactory(ObserveOnCallAdapterFactory.create(AndroidSchedulers.mainThread()))
       .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
       .build()
