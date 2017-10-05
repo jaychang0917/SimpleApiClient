@@ -54,7 +54,7 @@ interface GithubApi {
       }
   }
 
-  @GET("/sample/search/users")
+  @GET("/search/users")
   @Unwrap(ApiResult::class)
   @MockData(R.raw.get_users)
   fun getUsers(@Query("q") query: String): Observable<List<User>>
