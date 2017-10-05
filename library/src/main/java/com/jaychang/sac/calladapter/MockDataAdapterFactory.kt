@@ -8,17 +8,17 @@ import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import java.lang.reflect.Type
 
-internal class MockDataAdapterFactory(val mockDataApis: ApiManager.MockDataApis) : CallAdapter.Factory() {
+internal class MockDataAdapterFactory(val mockDataApis: ApiManager.MockDataApis,  private val isEnabled: Boolean) : CallAdapter.Factory() {
 
   companion object {
     @JvmStatic
-    fun create(mockDataApis: ApiManager.MockDataApis): MockDataAdapterFactory {
-      return MockDataAdapterFactory(mockDataApis)
+    fun create(mockDataApis: ApiManager.MockDataApis, isEnabled: Boolean): MockDataAdapterFactory {
+      return MockDataAdapterFactory(mockDataApis, isEnabled)
     }
   }
 
   override fun get(returnType: Type, annotations: Array<Annotation>, retrofit: Retrofit): CallAdapter<*, *>? {
-    if (annotations.none { it is MockData }) {
+    if (annotations.none { it is MockData } || !isEnabled) {
       return null
     }
 

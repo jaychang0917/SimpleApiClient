@@ -1,5 +1,7 @@
 package com.jaychang.sac
 
+import android.annotation.SuppressLint
+import android.content.Context
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -24,6 +26,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+@SuppressLint("StaticFieldLeak")
 object ApiManager {
 
   class MockDataApis : HashSet<String>() {
@@ -32,9 +35,10 @@ object ApiManager {
     fun addApi(request: Request) = add(toKey(request))
   }
 
-  lateinit var gson: Gson
-  lateinit var apiErrorClass: Class<*>
+  internal lateinit var gson: Gson
+  internal lateinit var apiErrorClass: Class<*>
   private val mockDataApis = MockDataApis()
+  internal lateinit var context: Context
 
   fun init(config: ApiClientConfig,
            apiErrorClass: Class<*>): Retrofit {
@@ -108,11 +112,11 @@ object ApiManager {
   private fun createRetrofit(config: ApiClientConfig, client: OkHttpClient): Retrofit {
     return Retrofit.Builder()
       .baseUrl(config.baseUrl).client(client)
-      .addConverterFactory(MockDataConverterFactory.create(config.context!!))
+      .addConverterFactory(MockDataConverterFactory.create(context, config.isMockDataEnabled))
       .addConverterFactory(WrappedResponseConverterFactory.create())
       .addConverterFactory(ImageConverterFactory.create())
       .addConverterFactory(GsonConverterFactory.create(gson))
-      .addCallAdapterFactory(MockDataAdapterFactory.create(mockDataApis))
+      .addCallAdapterFactory(MockDataAdapterFactory.create(mockDataApis, config.isMockDataEnabled))
       .addCallAdapterFactory(ObserveOnCallAdapterFactory.create(AndroidSchedulers.mainThread()))
       .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
       .build()

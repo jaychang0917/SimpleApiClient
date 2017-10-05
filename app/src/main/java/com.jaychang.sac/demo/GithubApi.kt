@@ -1,6 +1,5 @@
 package com.jaychang.sac.demo
 
-import android.content.Context
 import android.net.Uri
 import com.google.gson.annotations.SerializedName
 import com.jaychang.sac.*
@@ -27,8 +26,8 @@ class ApiError : SimpleApiError {
 interface GithubApi {
 
   companion object {
-    fun create(context: Context) : GithubApi =
-      SimpleApiClient.create<GithubApi, ApiError>(context) {
+    fun create() : GithubApi =
+      SimpleApiClient.create<GithubApi, ApiError> {
         baseUrl = "https://api.github.com"
         defaultParameters = mapOf()
         defaultHeaders = mapOf()
