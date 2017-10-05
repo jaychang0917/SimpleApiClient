@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit
 object ApiManager {
 
   class MockDataApis : HashSet<String>() {
-    private fun toKey(request: Request) = request.url().toString() + request.method()
+    private fun toKey(request: Request) = request.method() + " " + request.url().toString()
     fun hasApi(request: Request) = contains(toKey(request))
     fun addApi(request: Request) = add(toKey(request))
   }
