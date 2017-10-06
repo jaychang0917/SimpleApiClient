@@ -1,5 +1,11 @@
 ## Change Log
 
+### Version 1.4.1 (7 Oct 2017)
+- Fix: Return correct error for status code 500..599
+
+### Version 1.4.0 (6 Oct 2017)
+- Data mocking support
+
 ### Version 1.3.0 (5 Oct 2017)
 - `observe()` now return `Cancellable`
 
