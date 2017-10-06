@@ -17,7 +17,7 @@ internal class ErrorConsumer<T : Throwable>(private val handler: (Throwable) -> 
         when (code) {
           401, 403 -> result = AuthenticationError(code = code, message = message)
           in 400..499 -> result = ClientError(code = code, message = message)
-          in 500..599 -> result = ClientError(code = code, message = message)
+          in 500..599 -> result = ServerError(code = code, message = message)
         }
       }
       is UnknownHostException -> {
