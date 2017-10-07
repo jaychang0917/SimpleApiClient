@@ -11,7 +11,7 @@ A retrofit extension written in kotlin
 * [Serial / Parallel Calls](#serial_parallel_calls)
 * [Retry Interval / Exponential backoff](#retry)
 * [Call Cancellation](#call_cancel)
-* [Mock Data](#mock_data)
+* [Mock Response](#mock_response)
 
 ## Installation
 In your project level build.gradle :
@@ -201,14 +201,38 @@ val call = githubApi.getUsers("google").observe(...)
 call.cancel()
 ```
 
-## <a name=mock_data>Mock Data</a>
-To make the api return mock data, set `ApiClientConfig.isMockDataEnabled` to `true` and annotate the api with `@MockData(file)`.
+## <a name=mock_response>Mock Response</a>
+To enable response mocking, set `ApiClientConfig.isMockDataEnabled` to `true`.
+ 
+### Mock sample json data
+To make the api return a successful response with provided json
 ```kotlin
 @GET("/repos/{user}/{repo}")
-@MockData(R.raw.get_repo)
+@MockResponse(R.raw.get_repo)
 fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Observable<Repo>
 ```
 
+### Mock status
+To make the api return a client side error with provided json 
+```kotlin
+@GET("/repos/{user}/{repo}")
+@MockResponse(json = R.raw.get_repo_error, status = Status.CLIENT_ERROR)
+fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Observable<Repo>
+```
+`json` parameter of `MockResponse` is optional, you can set the status only, then you receive empty string.
+
+Possible `Status` values:
+```kotlin
+enum class Status {
+  SUCCESS, AUTHENTICATION_ERROR, CLIENT_ERROR, SERVER_ERROR, NETWORK_ERROR, SSL_ERROR
+}
+```
+To mock a response with success status only, you should return `Observable<Unit>`.
+```kotlin
+@GET("/repos/{user}/{repo}")
+@MockResponse(status = Status.SUCCESS)
+fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Observable<Unit>
+```
 
 ## License
 ```
