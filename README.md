@@ -229,9 +229,9 @@ enum class Status {
 ```
 To mock a response with success status only, you should return `Observable<Unit>`.
 ```kotlin
-@GET("/repos/{user}/{repo}")
+@DELETE("/repo/{id}}")
 @MockResponse(status = Status.SUCCESS)
-fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Observable<Unit>
+fun deleteRepo(@Path("id") id: String): Observable<Unit>
 ```
 
 ## License
