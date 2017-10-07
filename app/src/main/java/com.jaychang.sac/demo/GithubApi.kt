@@ -4,7 +4,7 @@ import android.net.Uri
 import com.google.gson.annotations.SerializedName
 import com.jaychang.sac.*
 import com.jaychang.sac.annotations.Image
-import com.jaychang.sac.annotations.MockData
+import com.jaychang.sac.annotations.MockResponse
 import com.jaychang.sac.annotations.Unwrap
 import com.jaychang.sac.demo.model.Repo
 import com.jaychang.sac.demo.model.User
@@ -55,7 +55,7 @@ interface GithubApi {
 
   @GET("/search/users")
   @Unwrap(ApiResult::class)
-  @MockData(R.raw.get_users)
+  @MockResponse(R.raw.get_users)
   fun getUsers(@Query("q") query: String): Observable<List<User>>
 
   @GET("/repos/{user}/{repo}")

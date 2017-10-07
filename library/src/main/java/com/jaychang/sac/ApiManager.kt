@@ -5,7 +5,7 @@ import android.content.Context
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.jaychang.sac.calladapter.MockDataAdapterFactory
+import com.jaychang.sac.calladapter.MockResponseAdapterFactory
 import com.jaychang.sac.calladapter.ObserveOnCallAdapterFactory
 import com.jaychang.sac.converter.ImageConverterFactory
 import com.jaychang.sac.converter.WrappedResponseConverterFactory
@@ -101,7 +101,7 @@ object ApiManager {
       .addConverterFactory(WrappedResponseConverterFactory.create())
       .addConverterFactory(ImageConverterFactory.create())
       .addConverterFactory(GsonConverterFactory.create(gson))
-      .addCallAdapterFactory(MockDataAdapterFactory.create(config.isMockDataEnabled, context, gson))
+      .addCallAdapterFactory(MockResponseAdapterFactory.create(config.isMockDataEnabled, context, gson))
       .addCallAdapterFactory(ObserveOnCallAdapterFactory.create(AndroidSchedulers.mainThread()))
       .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
       .build()
