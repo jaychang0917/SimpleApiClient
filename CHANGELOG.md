@@ -1,5 +1,8 @@
 ## Change Log
 
+### Version 1.6.1 (8 Oct 2017)
+- Fix: Fix wording
+
 ### Version 1.6.0 (8 Oct 2017)
 - New: Support custom JSON parser
 
