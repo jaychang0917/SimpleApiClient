@@ -22,7 +22,7 @@ fun <T> Observable<T>.thenAll(vararg calls: ObservableSource<*>): Observable<Arr
   }
 }
 
-fun <T> Observable<T>.retryExponential(maxRetryCount: Int = Int.MAX_VALUE, delaySeconds: Long = 0): Observable<T> {
+fun <T> Observable<T>.retryExponential(maxRetryCount: Int = Int.MAX_VALUE, delaySeconds: Long): Observable<T> {
   return retryWhen { error ->
     error
       .zipWith(Observable.range(1, maxRetryCount + 1), BiFunction { throwable: Throwable, retryCount: Int -> (throwable to retryCount) })
@@ -36,7 +36,7 @@ fun <T> Observable<T>.retryExponential(maxRetryCount: Int = Int.MAX_VALUE, delay
   }
 }
 
-fun <T> Observable<T>.retryInterval(maxRetryCount: Int = Int.MAX_VALUE, delaySeconds: Long = 0): Observable<T> {
+fun <T> Observable<T>.retryInterval(maxRetryCount: Int = Int.MAX_VALUE, delaySeconds: Long): Observable<T> {
   return retryWhen { error ->
     error
       .zipWith(Observable.range(1, maxRetryCount + 1), BiFunction { throwable: Throwable, retryCount: Int -> (throwable to retryCount) })
