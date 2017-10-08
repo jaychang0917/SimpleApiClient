@@ -1,5 +1,11 @@
 ## Change Log
 
+### Version 1.6.0 (8 Oct 2017)
+- New: Support custom JSON parser
+
+### Version 1.5.0 (7 Oct 2017)
+- New: Support mock response status
+
 ### Version 1.4.1 (7 Oct 2017)
 - Fix: Return correct error for status code 500..599
 
