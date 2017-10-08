@@ -19,5 +19,6 @@ data class ApiClientConfig(
   var certificatePins: List<CertificatePin>? = null,
   var isStethoEnabled: Boolean = true,
   var logLevel: LogLevel = LogLevel.NONE,
-  var isMockDataEnabled: Boolean = false
+  var isMockDataEnabled: Boolean = false,
+  var jsonParser: JsonParser = GsonParser()
 )

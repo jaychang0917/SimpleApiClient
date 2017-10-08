@@ -3,8 +3,6 @@ package com.jaychang.sac
 import android.annotation.SuppressLint
 import android.content.Context
 import com.facebook.stetho.okhttp3.StethoInterceptor
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.jaychang.sac.calladapter.MockResponseAdapterFactory
 import com.jaychang.sac.calladapter.ObserveOnCallAdapterFactory
 import com.jaychang.sac.converter.ImageConverterFactory
@@ -20,19 +18,17 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 @SuppressLint("StaticFieldLeak")
 object ApiManager {
 
-  internal lateinit var gson: Gson
   internal lateinit var apiErrorClass: Class<*>
   internal lateinit var context: Context
+  internal lateinit var jsonParser: JsonParser
 
-  fun init(config: ApiClientConfig,
-           apiErrorClass: Class<*>): Retrofit {
-    this.gson = createGson()
+  fun init(config: ApiClientConfig, apiErrorClass: Class<*>): Retrofit {
+    this.jsonParser = config.jsonParser
     this.apiErrorClass = apiErrorClass
     RxJavaPlugins.setErrorHandler {
       when (it){
@@ -91,17 +87,13 @@ object ApiManager {
     return builder.build()
   }
 
-  private fun createGson(): Gson {
-    return GsonBuilder().setPrettyPrinting().setLenient().create()
-  }
-
   private fun createRetrofit(config: ApiClientConfig, client: OkHttpClient): Retrofit {
     return Retrofit.Builder()
       .baseUrl(config.baseUrl).client(client)
       .addConverterFactory(WrappedResponseConverterFactory.create())
       .addConverterFactory(ImageConverterFactory.create())
-      .addConverterFactory(GsonConverterFactory.create(gson))
-      .addCallAdapterFactory(MockResponseAdapterFactory.create(config.isMockDataEnabled, context, gson))
+      .addConverterFactory(jsonParser.converterFactory())
+      .addCallAdapterFactory(MockResponseAdapterFactory.create(config.isMockDataEnabled, context, jsonParser))
       .addCallAdapterFactory(ObserveOnCallAdapterFactory.create(AndroidSchedulers.mainThread()))
       .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
       .build()

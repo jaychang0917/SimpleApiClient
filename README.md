@@ -63,6 +63,7 @@ interface GithubApi {
           CertificatePin(hostname = "api.foo.com", sha1PublicKeyHash = "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
           CertificatePin(hostname = "api.bar.com", sha256PublicKeyHash = "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9")
         )
+        jsonParser = GsonParser() // default: GsonParser
         errorHandler = { error ->
           when (error) {
             is AuthenticationError -> {...}
@@ -80,6 +81,21 @@ interface GithubApi {
 
 }
 ````
+
+#### Custom JSON Parser
+The library uses Gson to parse json by default, you can create your own json parser by implementing `JsonParser` interface.
+```kotlin
+class MoshiParser : JsonParser {
+  var moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+
+  override fun converterFactory(): Converter.Factory = MoshiConverterFactory.create(moshi)
+
+  override fun <T> parse(json: String, typeOfT: Type): T {
+    val jsonAdapter = moshi.adapter<T>(typeOfT)
+    return jsonAdapter.fromJson(json)!!
+  }
+}
+```
 
 ### Step 2
 Use `observe()` to enqueue the call, do your stuff in corresponding parameter block. All blocks are run on android main thread by default and they are optional.

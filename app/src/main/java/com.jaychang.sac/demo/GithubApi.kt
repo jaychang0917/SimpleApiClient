@@ -13,7 +13,7 @@ import okhttp3.ResponseBody
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
-class ApiResult<T: Any>: SimpleApiResult<T> {
+class ApiResult<T : Any> : SimpleApiResult<T> {
   @SerializedName("items")
   override lateinit var result: T
 }
@@ -26,7 +26,7 @@ class ApiError : SimpleApiError {
 interface GithubApi {
 
   companion object {
-    fun create() : GithubApi =
+    fun create(): GithubApi =
       SimpleApiClient.create<GithubApi, ApiError> {
         baseUrl = "https://api.github.com"
         defaultParameters = mapOf()
@@ -34,13 +34,14 @@ interface GithubApi {
         connectTimeout = TimeUnit.MINUTES.toMillis(1)
         readTimeout = TimeUnit.MINUTES.toMillis(1)
         writeTimeout = TimeUnit.MINUTES.toMillis(1)
-        isStethoEnabled = true // default true
-        logLevel = LogLevel.BASIC // default NONE
-        isMockDataEnabled = true // default false
+        isStethoEnabled = true // default: true
+        logLevel = LogLevel.BASIC // default: NONE
+        isMockDataEnabled = true // default: false
         certificatePins = listOf(
           CertificatePin(hostname = "api.foo.com", sha1PublicKeyHash = "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
           CertificatePin(hostname = "api.bar.com", sha256PublicKeyHash = "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9")
         )
+        jsonParser = GsonParser() // default: GsonParser
         errorHandler = { error ->
           when (error) {
             is AuthenticationError -> {}

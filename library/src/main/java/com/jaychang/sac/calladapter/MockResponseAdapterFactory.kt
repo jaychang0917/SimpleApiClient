@@ -1,8 +1,8 @@
 package com.jaychang.sac.calladapter
 
 import android.content.Context
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.jaychang.sac.JsonParser
 import com.jaychang.sac.SimpleApiResult
 import com.jaychang.sac.Utils
 import com.jaychang.sac.annotations.MockResponse
@@ -19,12 +19,12 @@ import java.lang.reflect.Type
 import java.net.UnknownHostException
 import javax.net.ssl.SSLPeerUnverifiedException
 
-internal class MockResponseAdapterFactory(private val isEnabled: Boolean, private val context: Context, private val gson: Gson) : CallAdapter.Factory() {
+internal class MockResponseAdapterFactory(private val isEnabled: Boolean, private val context: Context, private val jsonParser: JsonParser) : CallAdapter.Factory() {
 
   companion object {
     @JvmStatic
-    fun create(isEnabled: Boolean, context: Context, gson: Gson): MockResponseAdapterFactory {
-      return MockResponseAdapterFactory(isEnabled, context, gson)
+    fun create(isEnabled: Boolean, context: Context, jsonParser: JsonParser): MockResponseAdapterFactory {
+      return MockResponseAdapterFactory(isEnabled, context, jsonParser)
     }
   }
 
@@ -62,7 +62,7 @@ internal class MockResponseAdapterFactory(private val isEnabled: Boolean, privat
           Unit
         } else {
           val json = Utils.text(context, mockAnnotation.json)
-          val data: SimpleApiResult<Any> = gson.fromJson(json, apiResultType)
+          val data: SimpleApiResult<Any> = jsonParser.parse(json, apiResultType)
           data.result
         }
       }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
