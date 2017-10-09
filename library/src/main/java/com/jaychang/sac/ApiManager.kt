@@ -19,17 +19,19 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.util.concurrent.TimeUnit
+import kotlin.reflect.KClass
 
 @SuppressLint("StaticFieldLeak")
 object ApiManager {
 
-  internal lateinit var apiErrorClass: Class<*>
+  internal var errorClass: KClass<out SimpleApiError>? = null
   internal lateinit var context: Context
   internal lateinit var jsonParser: JsonParser
 
-  fun init(config: ApiClientConfig, apiErrorClass: Class<*>): Retrofit {
+  fun init(config: ApiClientConfig): Retrofit {
     this.jsonParser = config.jsonParser
-    this.apiErrorClass = apiErrorClass
+    this.errorClass = config.errorClass
+
     RxJavaPlugins.setErrorHandler {
       when (it){
         is CompositeException -> {
@@ -41,6 +43,7 @@ object ApiManager {
         }
       }
     }
+
     return createRetrofit(config, createOkHttpClient(config))
   }
 

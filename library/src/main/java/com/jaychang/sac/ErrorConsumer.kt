@@ -13,10 +13,10 @@ internal class ErrorConsumer<T : Throwable>(private val handler: (Throwable) -> 
       is HttpException -> {
         val code = error.response().code()
         val errorJson = error.response().errorBody()?.string()
-        val message = if (errorJson.isNullOrEmpty()) {
-          ""
+        val message = if (!errorJson.isNullOrEmpty() && ApiManager.errorClass != null) {
+          (ApiManager.jsonParser.parse<Any>(errorJson!!, ApiManager.errorClass!!.java) as SimpleApiError).message
         } else {
-          (ApiManager.jsonParser.parse<Any>(errorJson!!, ApiManager.apiErrorClass) as SimpleApiError).message
+          ""
         }
         when (code) {
           401, 403 -> result = AuthenticationError(code = code, message = message)

@@ -38,19 +38,15 @@ dependencies {
 
 ## <a name=basic_usage>Basic Usage</a>
 ### Step 1
-Configurate the api client and use it to create your api. `ApiError` is the error response model. You can centralize the handling of general error like 403 authentication in `errorHandler` block.
+Config the api client and use it to create your api.
 ```kotlin
-class ApiError : SimpleApiError {
-  @SerializedName("message")
-  override lateinit var message: String
-}
-
 interface GithubApi {
 
   companion object {
     fun create() : GithubApi =
-      SimpleApiClient.create<GithubApi, ApiError> {
+      SimpleApiClient.create {
         baseUrl = "https://api.github.com"
+        errorClass = ApiError::class // should be conformed to `SimpleApiError`
         defaultParameters = mapOf()
         defaultHeaders = mapOf()
         connectTimeout = TimeUnit.MINUTES.toMillis(1)
@@ -65,6 +61,7 @@ interface GithubApi {
         )
         jsonParser = GsonParser() // default: GsonParser
         errorHandler = { error ->
+          // you can centralize the handling of general error here
           when (error) {
             is AuthenticationError -> {...}
             is ClientError -> {...}

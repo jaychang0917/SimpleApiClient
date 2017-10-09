@@ -6,10 +6,10 @@ open class SimpleApiClient {
 
   companion object {
     @JvmStatic
-    inline fun <reified Api : Any, reified Error : Any> create(init: ApiClientConfig.() -> Unit): Api {
+    inline fun <reified Api : Any> create(init: ApiClientConfig.() -> Unit): Api {
       val config = ApiClientConfig()
       config.init()
-      return ApiManager.init(config, Error::class.java).create(Api::class.java)
+      return ApiManager.init(config).create(Api::class.java)
     }
 
     @JvmStatic
