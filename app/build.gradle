@@ -1,17 +1,19 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+    compileSdkVersion globalConfiguration["androidCompileSdkVersion"]
+    buildToolsVersion globalConfiguration["androidBuildToolsVersion"]
     defaultConfig {
         applicationId "com.jaychang.sac.demo"
-        minSdkVersion 14
-        targetSdkVersion 26
+        minSdkVersion globalConfiguration["androidMinSdkVersion"]
+        targetSdkVersion globalConfiguration["androidTargetSdkVersion"]
         versionCode 1
         versionName "1.0"
     }
+
+
     buildTypes {
         release {
             minifyEnabled false
@@ -24,19 +26,21 @@ android {
     lintOptions {
         abortOnError false
     }
-}
-
-ext {
-    dagger_version = "2.11"
+    kapt { generateStubs = true }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     implementation project(':library')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation "com.google.dagger:dagger:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    implementation "com.google.dagger:dagger-android-support:$dagger_version"
-    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    def commonDependencies = rootProject.ext.commonDependencies
+    implementation commonDependencies.appCompat
+    implementation commonDependencies.kotlinLib
+
+    def daggerDependencies = rootProject.ext.daggerDependencies
+    implementation daggerDependencies.daggerLib
+    kapt daggerDependencies.daggerCompilerLib
+    implementation daggerDependencies.daggerAndroidSupportLib
+    kapt daggerDependencies.daggerAndroidProcessorLib
+
 }
