@@ -28,7 +28,7 @@ object ApiManager {
   internal lateinit var context: Context
   internal lateinit var jsonParser: JsonParser
 
-  fun init(config: ApiClientConfig): Retrofit {
+  fun init(config: SimpleApiClient.Config): Retrofit {
     this.jsonParser = config.jsonParser
     this.errorClass = config.errorClass
 
@@ -47,7 +47,7 @@ object ApiManager {
     return createRetrofit(config, createOkHttpClient(config))
   }
 
-  private fun createOkHttpClient(config: ApiClientConfig): OkHttpClient {
+  private fun createOkHttpClient(config: SimpleApiClient.Config): OkHttpClient {
     val builder = OkHttpClient.Builder()
 
     if (config.isStethoEnabled) {
@@ -90,7 +90,7 @@ object ApiManager {
     return builder.build()
   }
 
-  private fun createRetrofit(config: ApiClientConfig, client: OkHttpClient): Retrofit {
+  private fun createRetrofit(config: SimpleApiClient.Config, client: OkHttpClient): Retrofit {
     return Retrofit.Builder()
       .baseUrl(config.baseUrl).client(client)
       .addConverterFactory(WrappedResponseConverterFactory.create())
