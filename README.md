@@ -39,13 +39,13 @@ dependencies {
 ## <a name=basic_usage>Basic Usage</a>
 ### Step 1
 Config the api client and use it to create your api.
-```kotlin
+```java
 interface GithubApi {
 
   companion object {
     fun create() : GithubApi =
       SimpleApiClient.create {
-        baseUrl = "https://api.github.com"
+        baseUrl = "https://api.github.com" 
         errorClass = ApiError::class // should be conformed to SimpleApiError
         defaultParameters = mapOf()
         defaultHeaders = mapOf()
