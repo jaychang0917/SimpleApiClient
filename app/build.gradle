@@ -1,19 +1,17 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
-    def globalConfiguration = rootProject.extensions.getByName("ext")
-    compileSdkVersion globalConfiguration["androidCompileSdkVersion"]
-    buildToolsVersion globalConfiguration["androidBuildToolsVersion"]
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.jaychang.sac.demo"
-        minSdkVersion globalConfiguration["androidMinSdkVersion"]
-        targetSdkVersion globalConfiguration["androidTargetSdkVersion"]
+        minSdkVersion 14
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
     }
-
-
     buildTypes {
         release {
             minifyEnabled false
@@ -26,21 +24,21 @@ android {
     lintOptions {
         abortOnError false
     }
-    kapt { generateStubs = true }
+}
+
+ext {
+    dagger_version = "2.11"
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     implementation project(':library')
-    def commonDependencies = rootProject.ext.commonDependencies
-    implementation commonDependencies.appCompat
-    implementation commonDependencies.kotlinLib
-
-    def daggerDependencies = rootProject.ext.daggerDependencies
-    implementation daggerDependencies.daggerLib
-    kapt daggerDependencies.daggerCompilerLib
-    implementation daggerDependencies.daggerAndroidSupportLib
-    kapt daggerDependencies.daggerAndroidProcessorLib
-
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation "com.google.dagger:dagger:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    implementation 'com.squareup.moshi:moshi-kotlin:1.5.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
 }

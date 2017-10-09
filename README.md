@@ -11,7 +11,7 @@ A retrofit extension written in kotlin
 * [Serial / Parallel Calls](#serial_parallel_calls)
 * [Retry Interval / Exponential backoff](#retry)
 * [Call Cancellation](#call_cancel)
-* [Mock Data](#mock_data)
+* [Mock Response](#mock_response)
 
 ## Installation
 In your project level build.gradle :
@@ -38,19 +38,15 @@ dependencies {
 
 ## <a name=basic_usage>Basic Usage</a>
 ### Step 1
-Configurate the api client and use it to create your api. `ApiError` is the error response model. You can centralize the handling of general error like 403 authentication in `errorHandler` block.
-```kotlin
-class ApiError : SimpleApiError {
-  @SerializedName("message")
-  override lateinit var message: String
-}
-
+Config the api client and use it to create your api.
+```java
 interface GithubApi {
 
   companion object {
     fun create() : GithubApi =
-      SimpleApiClient.create<GithubApi, ApiError> {
-        baseUrl = "https://api.github.com"
+      SimpleApiClient.create {
+        baseUrl = "https://api.github.com" 
+        errorClass = ApiError::class // should be conformed to SimpleApiError
         defaultParameters = mapOf()
         defaultHeaders = mapOf()
         connectTimeout = TimeUnit.MINUTES.toMillis(1)
@@ -63,7 +59,9 @@ interface GithubApi {
           CertificatePin(hostname = "api.foo.com", sha1PublicKeyHash = "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
           CertificatePin(hostname = "api.bar.com", sha256PublicKeyHash = "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9")
         )
+        jsonParser = GsonParser() // default: GsonParser
         errorHandler = { error ->
+          // you can centralize the handling of general error here
           when (error) {
             is AuthenticationError -> {...}
             is ClientError -> {...}
@@ -80,6 +78,21 @@ interface GithubApi {
 
 }
 ````
+
+#### Custom JSON Parser
+The library uses Gson to parse json by default, you can create your own json parser by implementing `JsonParser` interface.
+```kotlin
+class MoshiParser : JsonParser {
+  var moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+
+  override fun converterFactory(): Converter.Factory = MoshiConverterFactory.create(moshi)
+
+  override fun <T> parse(json: String, typeOfT: Type): T {
+    val jsonAdapter = moshi.adapter<T>(typeOfT)
+    return jsonAdapter.fromJson(json)!!
+  }
+}
+```
 
 ### Step 2
 Use `observe()` to enqueue the call, do your stuff in corresponding parameter block. All blocks are run on android main thread by default and they are optional.
@@ -201,14 +214,38 @@ val call = githubApi.getUsers("google").observe(...)
 call.cancel()
 ```
 
-## <a name=mock_data>Mock Data</a>
-To make the api return mock data, set `ApiClientConfig.isMockDataEnabled` to `true` and annotate the api with `@MockData(file)`.
+## <a name=mock_response>Mock Response</a>
+To enable response mocking, set `ApiClientConfig.isMockDataEnabled` to `true`.
+ 
+### Mock sample json data
+To make the api return a successful response with provided json
 ```kotlin
 @GET("/repos/{user}/{repo}")
-@MockData(R.raw.get_repo)
+@MockResponse(R.raw.get_repo)
 fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Observable<Repo>
 ```
 
+### Mock status
+To make the api return a client side error with provided json 
+```kotlin
+@GET("/repos/{user}/{repo}")
+@MockResponse(json = R.raw.get_repo_error, status = Status.CLIENT_ERROR)
+fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Observable<Repo>
+```
+`json` parameter of `MockResponse` is optional, you can set the status only, then you receive empty string.
+
+Possible `Status` values:
+```kotlin
+enum class Status {
+  SUCCESS, AUTHENTICATION_ERROR, CLIENT_ERROR, SERVER_ERROR, NETWORK_ERROR, SSL_ERROR
+}
+```
+To mock a response with success status only, you should return `Observable<Unit>`.
+```kotlin
+@DELETE("/repo/{id}}")
+@MockResponse(status = Status.SUCCESS)
+fun deleteRepo(@Path("id") id: String): Observable<Unit>
+```
 
 ## License
 ```

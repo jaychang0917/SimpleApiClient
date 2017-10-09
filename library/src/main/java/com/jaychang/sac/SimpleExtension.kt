@@ -22,7 +22,7 @@ fun <T> Observable<T>.thenAll(vararg calls: ObservableSource<*>): Observable<Arr
   }
 }
 
-fun <T> Observable<T>.retryExponential(maxRetryCount: Int = Int.MAX_VALUE, delaySeconds: Long = 0): Observable<T> {
+fun <T> Observable<T>.retryExponential(maxRetryCount: Int = Int.MAX_VALUE, delaySeconds: Long): Observable<T> {
   return retryWhen { error ->
     error
       .zipWith(Observable.range(1, maxRetryCount + 1), BiFunction { throwable: Throwable, retryCount: Int -> (throwable to retryCount) })
@@ -36,7 +36,7 @@ fun <T> Observable<T>.retryExponential(maxRetryCount: Int = Int.MAX_VALUE, delay
   }
 }
 
-fun <T> Observable<T>.retryInterval(maxRetryCount: Int = Int.MAX_VALUE, delaySeconds: Long = 0): Observable<T> {
+fun <T> Observable<T>.retryInterval(maxRetryCount: Int = Int.MAX_VALUE, delaySeconds: Long): Observable<T> {
   return retryWhen { error ->
     error
       .zipWith(Observable.range(1, maxRetryCount + 1), BiFunction { throwable: Throwable, retryCount: Int -> (throwable to retryCount) })
@@ -58,19 +58,19 @@ fun <T> Observable<T>.autoCancel(view: View): AutoDisposeViewProxy<T> {
   return AutoDisposeViewProxyImpl(this, view)
 }
 
-fun <T> AutoDisposeLifecycleOwnerProxy<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Cancellable {
-  return Cancellable(sourceObservable.doOnSubscribe { onStart() }.doFinally { onEnd() }
+fun <T> AutoDisposeLifecycleOwnerProxy<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Cancelable {
+  return Cancelable(sourceObservable.doOnSubscribe { onStart() }.doFinally { onEnd() }
     .to<ObservableSubscribeProxy<T>>(AutoDispose.with(AndroidLifecycleScopeProvider.from(lifecycleOwner)).forObservable())
     .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError)))
 }
 
-fun <T> AutoDisposeViewProxy<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Cancellable {
-  return Cancellable(sourceObservable.doOnSubscribe { onStart() }.doFinally { onEnd() }
+fun <T> AutoDisposeViewProxy<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Cancelable {
+  return Cancelable(sourceObservable.doOnSubscribe { onStart() }.doFinally { onEnd() }
     .to<ObservableSubscribeProxy<T>>(AutoDispose.with(ViewScopeProvider.from(view)).forObservable())
     .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError)))
 }
 
-fun <T> Observable<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Cancellable {
-  return Cancellable(doOnSubscribe { onStart() }.doFinally { onEnd() }
+fun <T> Observable<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Cancelable {
+  return Cancelable(doOnSubscribe { onStart() }.doFinally { onEnd() }
     .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError)))
 }
