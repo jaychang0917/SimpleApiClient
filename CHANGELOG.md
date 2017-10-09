@@ -1,5 +1,11 @@
 ## Change Log
 
+### Version 1.8.0 (9 Oct 2017)
+- Api changes: Demote `ApiClientConfig` to `SimpleApiClient.Config` 
+
+### Version 1.7.0 (9 Oct 2017)
+- Api changes: Error model type should be set via `SimpleApierrorClass` 
+
 ### Version 1.6.2 (8 Oct 2017)
 - Fix: No default parameter value for retry delaySeconds
 
