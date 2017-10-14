@@ -29,7 +29,7 @@ interface GithubApi {
     fun create(): GithubApi =
       SimpleApiClient.create {
         baseUrl = "https://api.github.com"
-        errorClass = ApiError::class
+        errorMessageKeyPath = "message"
         defaultParameters = mapOf()
         defaultHeaders = mapOf()
         connectTimeout = TimeUnit.MINUTES.toMillis(1)

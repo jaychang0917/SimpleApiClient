@@ -26,12 +26,14 @@ import kotlin.reflect.KClass
 object ApiManager {
 
   internal var errorClass: KClass<out SimpleApiError>? = null
+  internal var errorMessageKeyPath: String? = null
   internal lateinit var context: Context
   internal lateinit var jsonParser: JsonParser
 
   fun init(config: SimpleApiClient.Config): Retrofit {
     this.jsonParser = config.jsonParser
     this.errorClass = config.errorClass
+    this.errorMessageKeyPath = config.errorMessageKeyPath
 
     RxJavaPlugins.setErrorHandler {
       when (it){

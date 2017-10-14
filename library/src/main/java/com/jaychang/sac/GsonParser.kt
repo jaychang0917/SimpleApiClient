@@ -5,7 +5,7 @@ import retrofit2.Converter
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
 
-class GsonParser: JsonParser {
+class GsonParser : JsonParser {
 
   private var gson = Gson()
 
@@ -13,22 +13,30 @@ class GsonParser: JsonParser {
     return GsonConverterFactory.create(gson)
   }
 
-  override fun <T> parse(json: String, typeOfT: Type): T {
-    return gson.fromJson(json, typeOfT)
+  override fun <T> parse(json: String, typeOfT: Type, keyPath: String?): T {
+    return if (keyPath == null) {
+      gson.fromJson(json, typeOfT)
+    } else {
+      createGson(typeOfT, keyPath).fromJson(json, typeOfT)
+    }
   }
 
-  override fun onKeyPathReceived(type: Type, keyPath: String) {
-    val deserializer = KeyPathDeserializer<Any>(keyPath)
-    gson = GsonBuilder().registerTypeAdapter(type, deserializer).create()
+  override fun update(type: Type, keyPath: String) {
+    gson = createGson(type, keyPath)
   }
 
-  class KeyPathDeserializer<T : Any>(private val keyPath: String) : JsonDeserializer<T> {
-    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): T {
+  private fun createGson(type: Type, keyPath: String): Gson {
+    val deserializer = KeyPathDeserializer(keyPath)
+    return GsonBuilder().registerTypeAdapter(type, deserializer).create()
+  }
+
+  private class KeyPathDeserializer(private val keyPath: String) : JsonDeserializer<Any> {
+    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Any {
       val parts = keyPath.split(".")
       var jsonObject = json.asJsonObject
       var jsonElement: JsonElement = jsonObject[parts[0]]
       for (part in parts) {
-        jsonElement =  jsonObject[part]
+        jsonElement = jsonObject[part]
         if (jsonElement is JsonObject) {
           jsonObject = jsonElement.asJsonObject
         }

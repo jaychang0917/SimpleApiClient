@@ -28,7 +28,7 @@ class KeyPathResponseConverterFactory(val jsonParser: JsonParser) : Converter.Fa
       return null
     }
 
-    jsonParser.onKeyPathReceived(type, value)
+    jsonParser.update(type, value)
 
     val delegate: Converter<ResponseBody, Any> = retrofit.nextResponseBodyConverter(this, type, annotations)
 
