@@ -1,5 +1,11 @@
 ## Change Log
 
+### Version 1.9.0 (15 Oct 2017)
+- New: Add @ResponseKeyPath for successful response parsing
+- New: Add `errorMessageKeyPath` for error response parsing
+- Api changes: @Image is refactored to @MultiPart which add mime type parameter
+- Fix: Mock reponse parsing now will not throw error when use @Unwrap
+
 ### Version 1.8.0 (9 Oct 2017)
 - Api changes: Demote `ApiClientConfig` to `SimpleApiClient.Config` 
 
