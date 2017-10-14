@@ -4,10 +4,10 @@ import android.content.Context
 import com.google.gson.reflect.TypeToken
 import com.jaychang.sac.JsonParser
 import com.jaychang.sac.SimpleApiResult
-import com.jaychang.sac.Utils
-import com.jaychang.sac.annotations.MockResponse
-import com.jaychang.sac.annotations.Status.*
-import com.jaychang.sac.annotations.Unwrap
+import com.jaychang.sac.util.Utils
+import com.jaychang.sac.annotation.MockResponse
+import com.jaychang.sac.annotation.Status.*
+import com.jaychang.sac.annotation.Unwrap
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

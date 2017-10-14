@@ -1,7 +1,7 @@
 package com.jaychang.sac.converter
 
 import com.jaychang.sac.JsonParser
-import com.jaychang.sac.annotations.ResponseKeyPath
+import com.jaychang.sac.annotation.ResponseKeyPath
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Retrofit

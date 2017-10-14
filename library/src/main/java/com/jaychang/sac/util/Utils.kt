@@ -1,4 +1,4 @@
-package com.jaychang.sac
+package com.jaychang.sac.util
 
 import android.content.Context
 import java.io.BufferedReader

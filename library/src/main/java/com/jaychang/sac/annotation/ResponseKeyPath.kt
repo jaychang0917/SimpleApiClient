@@ -1,4 +1,4 @@
-package com.jaychang.sac.annotations
+package com.jaychang.sac.annotation
 
 @Target(AnnotationTarget.FUNCTION)
 annotation class ResponseKeyPath(val value: String)

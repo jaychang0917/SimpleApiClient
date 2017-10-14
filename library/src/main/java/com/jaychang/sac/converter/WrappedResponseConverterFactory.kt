@@ -2,7 +2,7 @@ package com.jaychang.sac.converter
 
 import com.google.gson.reflect.TypeToken
 import com.jaychang.sac.SimpleApiResult
-import com.jaychang.sac.annotations.Unwrap
+import com.jaychang.sac.annotation.Unwrap
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Retrofit

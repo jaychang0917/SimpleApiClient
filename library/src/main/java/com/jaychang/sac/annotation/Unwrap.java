@@ -1,4 +1,4 @@
-package com.jaychang.sac.annotations;
+package com.jaychang.sac.annotation;
 
 import com.jaychang.sac.SimpleApiResult;
 
