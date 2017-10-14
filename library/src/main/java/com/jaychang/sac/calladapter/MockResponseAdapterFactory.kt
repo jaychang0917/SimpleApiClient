@@ -62,8 +62,12 @@ internal class MockResponseAdapterFactory(private val isEnabled: Boolean, privat
           Unit
         } else {
           val json = Utils.text(context, mockAnnotation.json)
-          val data: SimpleApiResult<Any> = jsonParser.parse(json, apiResultType)
-          data.result
+          val data = jsonParser.parse<Any>(json, apiResultType)
+          if (data is SimpleApiResult<Any>) {
+            data.result
+          } else {
+            data
+          }
         }
       }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
