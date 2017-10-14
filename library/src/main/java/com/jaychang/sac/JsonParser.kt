@@ -9,4 +9,10 @@ interface JsonParser {
 
   fun <T> parse(json: String, typeOfT: Type): T
 
+  /**
+   * Update the parser to deserialize response by keyPath
+   * */
+  fun onKeyPathReceived(type: Type, keyPath: String) {
+  }
+
 }

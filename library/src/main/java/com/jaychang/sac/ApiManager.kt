@@ -6,6 +6,7 @@ import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.jaychang.sac.calladapter.MockResponseAdapterFactory
 import com.jaychang.sac.calladapter.ObserveOnCallAdapterFactory
 import com.jaychang.sac.converter.ImageConverterFactory
+import com.jaychang.sac.converter.KeyPathResponseConverterFactory
 import com.jaychang.sac.converter.WrappedResponseConverterFactory
 import com.jaychang.sac.interceptor.HeaderInterceptor
 import com.jaychang.sac.interceptor.ParameterInterceptor
@@ -93,6 +94,7 @@ object ApiManager {
   private fun createRetrofit(config: SimpleApiClient.Config, client: OkHttpClient): Retrofit {
     return Retrofit.Builder()
       .baseUrl(config.baseUrl).client(client)
+      .addConverterFactory(KeyPathResponseConverterFactory.create(jsonParser))
       .addConverterFactory(WrappedResponseConverterFactory.create())
       .addConverterFactory(ImageConverterFactory.create())
       .addConverterFactory(jsonParser.converterFactory())

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.jaychang.sac.*
 import com.jaychang.sac.annotations.Image
 import com.jaychang.sac.annotations.MockResponse
-import com.jaychang.sac.annotations.Unwrap
+import com.jaychang.sac.annotations.ResponseKeyPath
 import com.jaychang.sac.demo.model.Repo
 import com.jaychang.sac.demo.model.User
 import io.reactivex.Observable
@@ -56,7 +56,8 @@ interface GithubApi {
   }
 
   @GET("/search/users")
-  @Unwrap(ApiResult::class)
+//  @Unwrap(ApiResult::class)
+  @ResponseKeyPath("foo.bar.items")
   @MockResponse(R.raw.get_users)
   fun getUsers(@Query("q") query: String): Observable<List<User>>
 
