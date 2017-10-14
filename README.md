@@ -166,13 +166,13 @@ fun getUsers(@Query("q") query: String): Observable<List<User>>
 ```
 
 ## <a name=image>Convert Uri to MultiPartBody</a>
-Use `@Image("key")` to annotate a `Uri` or `ArrayList<Uri>` that is going to be converted to `MultiPartBody`
+Use `@MultiPart` to annotate a `Uri` or `ArrayList<Uri>` that is going to be converted to `MultiPartBody`
 ```kotlin
 @POST("/upload")
-fun uploadPhoto(@Body @Image("image") file: Uri): Observable<ResponseBody>
+fun uploadPhoto(@Body @MultiPart(name = "image", mimeType = "image/jpeg") file: Uri): Observable<Image>
 
 @POST("/upload")
-fun uploadPhotos(@Body @Image("image") files: ArrayList<Uri>): Observable<ResponseBody>
+fun uploadPhotos(@Body @MultiPart(name = "image", mimeType = "image/jpeg") files: ArrayList<Uri>): Observable<Image>
 ```
 
 ```kotlin
