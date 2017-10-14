@@ -6,7 +6,8 @@ A retrofit extension written in kotlin
 
 ## Table of Contents
 * [Basic Usage](#basic_usage)
-* [Unwrap Api Response](#unwrap)
+* [Unwrap Response by KeyPath](#unwrap_keypath)
+* [Unwrap Response by Wrapper Class](#unwrap_class)
 * [Convert Uri to MultiPartBody](#image)
 * [Serial / Parallel Calls](#serial_parallel_calls)
 * [Retry Interval / Exponential backoff](#retry)
@@ -47,6 +48,7 @@ interface GithubApi {
       SimpleApiClient.create {
         baseUrl = "https://api.github.com" 
         errorClass = ApiError::class // should be conformed to SimpleApiError
+        errorMessageKeyPath = "meta.message"
         defaultParameters = mapOf()
         defaultHeaders = mapOf()
         connectTimeout = TimeUnit.MINUTES.toMillis(1)
@@ -106,8 +108,8 @@ githubApi.getUsers("google")
   )
 ```
 
-## <a name=unwrap>Unwrap Api Response</a>
-Sometimes the api response includes metadata that we don't need, but in order to map the response we create a wrapper class and return that wrapper class.
+## <a name=unwrap_keypath>Unwrap Response by KeyPath</a>
+Sometimes the api response includes metadata that we don't need, but in order to map the response we create a wrapper class and make the function return that wrapper class.
 This approach leaks the implementation of service to calling code.
 
 Assuming the response json looks like the following:
@@ -115,22 +117,47 @@ Assuming the response json looks like the following:
 {
   total_count: 33909,
   incomplete_results: false,
-  items: [
-    {
-      login: "jay",
-      id: 965580,
-      ...
+  foo: {
+    bar: {
+      items: [
+        {
+          login: "jaychang0917",
+          ...
+        }
+        ...
+      ]
     }
-    ...
-  ]
+  }
 }
 ```
-And you only want the `items` part, we can use `@Unwrap(ApiResult::class)` annotation to indicate that the return type is a unwrapped type of `ApiResult`,
-which is `List<User>` in this case.
+And you only want the `items` part, use `@ResponseKeyPath("keypath")` annotation to indicate which part of response you want. 
+```kotlin
+@GET("/search/users")
+@ResponseKeyPath("foo.bar.items")
+fun getUsers(@Query("q") query: String): Observable<List<User>>
+```
+
+Similarly, unwrap the error response by setting the `errorMessageKeyPath` of `SimpleApiClient.Config`
+
+**This feature is only available for default gson parser, if you use other json parser like *moshi*, you should implement the following method of `JsonParser`**
+```kotlin
+interface JsonParser {
+
+  // this method is called before the api response parsing
+  fun update(type: Type, keyPath: String) {
+    
+  }
+
+}
+```
+[The default `GsonParser` implementation](https://github.com/jaychang0917/SimpleApiClient/blob/master/library/src/main/java/com/jaychang/sac/GsonParser.kt)
+
+## <a name=unwrap_class>Unwrap Response by Wrapper Class</a>
+An alternative solution is that you can create a wrapper class that conforming `SimpleApiResult<T>`, and use `@Unwrap(class)` to indicate that you want an unwrapped response of that wrapper class. 
+
 ```kotlin
 class ApiResult<T: Any>: SimpleApiResult<T> {
-  @SerializedName("items")
-  override lateinit var result: T
+  ...
 }
 
 @GET("/search/users")
@@ -215,7 +242,7 @@ call.cancel()
 ```
 
 ## <a name=mock_response>Mock Response</a>
-To enable response mocking, set `ApiClientConfig.isMockDataEnabled` to `true`.
+To enable response mocking, set `SimpleApiClient.Config.isMockDataEnabled` to `true`.
  
 ### Mock sample json data
 To make the api return a successful response with provided json
