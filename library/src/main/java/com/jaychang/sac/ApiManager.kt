@@ -5,7 +5,7 @@ import android.content.Context
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.jaychang.sac.calladapter.MockResponseAdapterFactory
 import com.jaychang.sac.calladapter.ObserveOnCallAdapterFactory
-import com.jaychang.sac.converter.ImageConverterFactory
+import com.jaychang.sac.converter.MultiPartConverterFactory
 import com.jaychang.sac.converter.KeyPathResponseConverterFactory
 import com.jaychang.sac.converter.WrappedResponseConverterFactory
 import com.jaychang.sac.interceptor.HeaderInterceptor
@@ -98,7 +98,7 @@ object ApiManager {
       .baseUrl(config.baseUrl).client(client)
       .addConverterFactory(KeyPathResponseConverterFactory.create(jsonParser))
       .addConverterFactory(WrappedResponseConverterFactory.create())
-      .addConverterFactory(ImageConverterFactory.create())
+      .addConverterFactory(MultiPartConverterFactory.create())
       .addConverterFactory(jsonParser.converterFactory())
       .addCallAdapterFactory(MockResponseAdapterFactory.create(config.isMockDataEnabled, context, jsonParser))
       .addCallAdapterFactory(ObserveOnCallAdapterFactory.create(AndroidSchedulers.mainThread()))

@@ -1,7 +1,7 @@
 package com.jaychang.sac.converter
 
 import android.net.Uri
-import com.jaychang.sac.annotations.Image
+import com.jaychang.sac.annotation.MultiPart
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -13,12 +13,12 @@ import java.io.File
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
-class ImageConverterFactory : Converter.Factory() {
+class MultiPartConverterFactory : Converter.Factory() {
 
   companion object {
     @JvmStatic
-    fun create(): ImageConverterFactory {
-      return ImageConverterFactory()
+    fun create(): MultiPartConverterFactory {
+      return MultiPartConverterFactory()
     }
   }
 
@@ -32,22 +32,20 @@ class ImageConverterFactory : Converter.Factory() {
 
     val hasNoBodyAnnotation = parameterAnnotations.none { annotation -> annotation is Body }
     if (hasNoBodyAnnotation) {
-      throw MissingArgumentException("""You must specify @Body""")
+      throw MissingArgumentException("You must specify @Body")
     }
 
-    val hasNoImageAnnotation = parameterAnnotations.none { annotation -> annotation is Image }
+    val hasNoImageAnnotation = parameterAnnotations.none { annotation -> annotation is MultiPart }
     if (hasNoImageAnnotation) {
-      throw MissingArgumentException("""You must specify @Image, e.g. @Image("foo")""")
+      throw MissingArgumentException("You must specify @MultiPart")
     }
 
-    val annotation = parameterAnnotations.find { annotation -> annotation is Image } as Image
-
-    val annotationValue = annotation.value
+    val annotation = parameterAnnotations.find { annotation -> annotation is MultiPart } as MultiPart
 
     return Converter<Any, RequestBody> { value ->
       when {
-        isUriType -> createMultipartBody(listOf(value as Uri), annotationValue)
-        else -> createMultipartBody(value as Iterable<Uri>, annotationValue)
+        isUriType -> createMultipartBody(listOf(value as Uri), annotation)
+        else -> createMultipartBody(value as Iterable<Uri>, annotation)
       }
     }
   }
@@ -71,10 +69,10 @@ class ImageConverterFactory : Converter.Factory() {
     return false
   }
 
-  private fun createMultipartBody(list: Iterable<Uri>, annotationValue: String): MultipartBody {
+  private fun createMultipartBody(list: Iterable<Uri>, part: MultiPart): MultipartBody {
     val parts = list.map {
       val file = File(it.path)
-      MultipartBody.Part.createFormData(annotationValue, file.name, RequestBody.create(MediaType.parse("image/*"), file))
+      MultipartBody.Part.createFormData(part.name, file.name, RequestBody.create(MediaType.parse(part.mimeType), file))
     }
 
     val builder = MultipartBody.Builder()
