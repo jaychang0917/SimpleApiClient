@@ -1,5 +1,8 @@
 ## Change Log
 
+### Version 1.10.0 (20 Oct 2017)
+- Api changes: `SimpleApiClient.Config.isMockDataEnabled` is renamed to `SimpleApiClient.Config.isMockResponseEnabled`
+
 ### Version 1.9.0 (15 Oct 2017)
 - New: Add `@ResponseKeyPath` for successful response parsing
 - New: Add `errorMessageKeyPath` for error response parsing
