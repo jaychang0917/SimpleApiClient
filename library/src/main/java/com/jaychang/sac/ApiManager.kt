@@ -100,7 +100,7 @@ object ApiManager {
       .addConverterFactory(WrappedResponseConverterFactory.create())
       .addConverterFactory(MultiPartConverterFactory.create())
       .addConverterFactory(jsonParser.converterFactory())
-      .addCallAdapterFactory(MockResponseAdapterFactory.create(config.isMockDataEnabled, context, jsonParser))
+      .addCallAdapterFactory(MockResponseAdapterFactory.create(config.isMockResponseEnabled, context, jsonParser))
       .addCallAdapterFactory(ObserveOnCallAdapterFactory.create(AndroidSchedulers.mainThread()))
       .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
       .build()

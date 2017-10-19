@@ -22,7 +22,7 @@ open class SimpleApiClient {
     var certificatePins: List<CertificatePin>? = null,
     var isStethoEnabled: Boolean = true,
     var logLevel: LogLevel = LogLevel.NONE,
-    var isMockDataEnabled: Boolean = false,
+    var isMockResponseEnabled: Boolean = false,
     var jsonParser: JsonParser = GsonParser()
   )
 
