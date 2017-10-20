@@ -183,18 +183,18 @@ githubApi.uploadPhoto(uri)
 ## <a name=serial_parallel_calls>Serial / Parallel Calls</a>
 ### Serial
 ```kotlin
-githubApi.getUsers("google")
-  .then { users -> githubApi.getRepo("google", "gson") }
+githubApi.foo()
+  .then { foo -> githubApi.bar(foo.name) }
   .observe(...)
 ```
 
 ### Serial then Parallel
 ```kotlin
-githubApi.getUsers("google")
-  .then { users -> githubApi.getRepo("google", "gson") }
-  .thenAll( repo ->
-    githubApi.getUsers("ReactiveX"),
-    githubApi.getRepo("ReactiveX", "RxJava")
+githubApi.foo()
+  .then { foo -> githubApi.bar(foo.name) }
+  .thenAll( bar ->
+    githubApi.baz(bar.name),
+    githubApi.qux(bar.name)
   )
   .observe(...)
 ```
@@ -202,18 +202,18 @@ githubApi.getUsers("google")
 ### Parallel
 ```kotlin
 SimpleApiClient.all(
-  githubApi.getUsers("google"),
-  githubApi.getRepo("google", "gson")
+  githubApi.foo(),
+  githubApi.bar()
 ).observe(...)
 ```
 
 ### Parallel then Serial
 ```kotlin
 SimpleApiClient.all(
-  githubApi.getUsers("google"),
-  githubApi.getRepo("google", "gson")
+  githubApi.foo(),
+  githubApi.bar()
 ).then { array -> // the return type is Array<Any>, you should cast them, e.g. val users = array[0] as List<User>
-  githubApi.getUsers("google")
+  githubApi.baz()
 }.observe(...)
 ```
 
