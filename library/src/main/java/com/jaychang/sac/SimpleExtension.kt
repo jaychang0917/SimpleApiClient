@@ -1,5 +1,6 @@
 package com.jaychang.sac
 
+import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.view.View
 import com.uber.autodispose.AutoDispose
@@ -50,8 +51,8 @@ fun <T> Observable<T>.retryInterval(maxRetryCount: Int = Int.MAX_VALUE, delaySec
   }
 }
 
-fun <T> Observable<T>.autoCancel(lifecycleOwner: LifecycleOwner): AutoDisposeLifecycleOwnerProxy<T> {
-  return AutoDisposeLifecycleOwnerProxyImpl(this, lifecycleOwner)
+fun <T> Observable<T>.autoCancel(lifecycleOwner: LifecycleOwner, untilEvent: Lifecycle.Event? = null): AutoDisposeLifecycleOwnerProxy<T> {
+  return AutoDisposeLifecycleOwnerProxyImpl(this, lifecycleOwner, untilEvent)
 }
 
 fun <T> Observable<T>.autoCancel(view: View): AutoDisposeViewProxy<T> {
@@ -60,7 +61,7 @@ fun <T> Observable<T>.autoCancel(view: View): AutoDisposeViewProxy<T> {
 
 fun <T> AutoDisposeLifecycleOwnerProxy<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Cancelable {
   return Cancelable(sourceObservable.doOnSubscribe { onStart() }.doFinally { onEnd() }
-    .to<ObservableSubscribeProxy<T>>(AutoDispose.with(AndroidLifecycleScopeProvider.from(lifecycleOwner)).forObservable())
+    .to<ObservableSubscribeProxy<T>>(AutoDispose.with(AndroidLifecycleScopeProvider.from(lifecycleOwner, untilEvent)).forObservable())
     .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError)))
 }
 
