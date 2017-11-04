@@ -1,5 +1,9 @@
 ## Change Log
 
+### Version 1.11.0 (20 Oct 2017)
+- New: Add `autoCancel(LifecycleOwner, Lifecycle.Event)` for cancelling call until specific event occurs
+- Fix: keypath parsing issue
+
 ### Version 1.10.0 (20 Oct 2017)
 - Api changes: `SimpleApiClient.Config.isMockDataEnabled` is renamed to `SimpleApiClient.Config.isMockResponseEnabled`
 
