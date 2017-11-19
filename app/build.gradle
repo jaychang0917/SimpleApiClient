@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion deps.build.compileSdkVersion
+    buildToolsVersion deps.build.buildToolsVersion
     defaultConfig {
         applicationId "com.jaychang.sac.demo"
-        minSdkVersion 14
-        targetSdkVersion 26
+        minSdkVersion deps.build.minSdkVersion
+        targetSdkVersion deps.build.targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
@@ -26,19 +26,15 @@ android {
     }
 }
 
-ext {
-    dagger_version = "2.11"
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':library')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation "com.google.dagger:dagger:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    implementation "com.google.dagger:dagger-android-support:$dagger_version"
-    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
-    implementation 'com.squareup.moshi:moshi-kotlin:1.5.0'
-    implementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
+    implementation deps.kotlin.stdlib
+    implementation deps.support.appcompat
+    implementation deps.dagger2.core
+    kapt deps.dagger2.compiler
+    implementation deps.dagger2.androidSupport
+    kapt deps.dagger2.androidProcessor
+    implementation deps.moshi
+    implementation deps.retrofit2.converterMoshi
 }
