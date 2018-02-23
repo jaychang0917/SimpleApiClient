@@ -2,11 +2,12 @@ package com.jaychang.sac
 
 import android.annotation.SuppressLint
 import android.content.Context
+import com.facebook.stetho.Stetho
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.jaychang.sac.calladapter.MockResponseAdapterFactory
 import com.jaychang.sac.calladapter.ObserveOnCallAdapterFactory
-import com.jaychang.sac.converter.MultiPartConverterFactory
 import com.jaychang.sac.converter.KeyPathResponseConverterFactory
+import com.jaychang.sac.converter.MultiPartConverterFactory
 import com.jaychang.sac.converter.WrappedResponseConverterFactory
 import com.jaychang.sac.interceptor.HeaderInterceptor
 import com.jaychang.sac.interceptor.ParameterInterceptor
@@ -54,6 +55,7 @@ object ApiManager {
     val builder = OkHttpClient.Builder()
 
     if (config.isStethoEnabled) {
+      Stetho.initializeWithDefaults(context.applicationContext)
       builder.addNetworkInterceptor(StethoInterceptor())
     }
 
