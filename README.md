@@ -1,5 +1,5 @@
 # SimpleApiClient
-[![Release](https://jitpack.io/v/jaychang0917/SimpleApiClient.svg)](https://jitpack.io/#jaychang0917/SimpleApiClient)
+[![Download](https://api.bintray.com/packages/jaychang0917/maven/simpleapiclient/images/download.svg) ](https://bintray.com/jaychang0917/maven/simpleapiclient/_latestVersion)
 [![Android Weekly](http://img.shields.io/badge/Android%20Weekly-%23277-2CB3E5.svg)](http://androidweekly.net/issues/issue-277)
 
 A configurable api client based on Retrofit2 and RxJava2 for android
@@ -15,25 +15,14 @@ A configurable api client based on Retrofit2 and RxJava2 for android
 * [Mock Response](#mock_response)
 
 ## Installation
-In your project level build.gradle :
-
-```java
-allprojects {
-    repositories {
-        ...
-        maven { url "https://jitpack.io" }
-    }
-}
-```
-
 In your app level build.gradle :
 
 ```java
 dependencies {
-    compile 'com.github.jaychang0917:SimpleApiClient:{latest_version}'
+    compile 'com.jaychang:simpleapiclient:2.0.0'
 }
 ```
-[![Release](https://jitpack.io/v/jaychang0917/SimpleApiClient.svg)](https://jitpack.io/#jaychang0917/SimpleApiClient)
+[![Download](https://api.bintray.com/packages/jaychang0917/maven/simpleapiclient/images/download.svg) ](https://bintray.com/jaychang0917/maven/simpleapiclient/_latestVersion)
 
 ---
 
