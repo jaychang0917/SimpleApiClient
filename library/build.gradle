@@ -1,8 +1,15 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.novoda.bintray-release'
 
-group='com.github.jaychang0917'
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath deps.build.gradlePlugins.bintray
+    }
+}
 
 android {
     compileSdkVersion deps.build.compileSdkVersion
@@ -22,18 +29,26 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile deps.support.appcompat
-    compile deps.kotlin.stdlib
-    compile deps.rxJava2
-    compile deps.rxAndroid
-    compile deps.retrofit2.core
-    compile deps.retrofit2.converterGson
-    compile deps.retrofit2.adapterRxJava2
-    compile deps.okhttp3.logging
-    compile deps.gson
-    compile deps.stetho.core
-    compile deps.stetho.okhttp3
-    compile deps.autodispose.android
-    compile deps.autodispose.arch
+    api deps.support.appcompat
+    api deps.kotlin.stdlib
+    api deps.rxJava2
+    api deps.rxAndroid
+    api deps.retrofit2.core
+    api deps.retrofit2.converterGson
+    api deps.retrofit2.adapterRxJava2
+    api deps.okhttp3.logging
+    api deps.gson
+    implementation deps.stetho.core
+    implementation deps.stetho.okhttp3
+    implementation deps.autodispose.android
+    implementation deps.autodispose.arch
+}
+
+publish {
+    userOrg = 'jaychang0917'
+    groupId = 'com.jaychang'
+    artifactId = 'simpleapiclient'
+    publishVersion = '2.0.0'
+    desc = 'A configurable api client based on Retrofit2 and RxJava2 for android.'
+    website = 'https://github.com/jaychang0917/SimpleApiClient'
 }
