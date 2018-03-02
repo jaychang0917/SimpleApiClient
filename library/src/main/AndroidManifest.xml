@@ -5,7 +5,7 @@
 
     <application>
         <provider
-            android:authorities="${applicationId}.ContextProvider"
+            android:authorities="${applicationId}.simpleapiclientprovider"
             android:name=".ContextProvider"
             android:exported="false"
             android:enabled="true"/>
