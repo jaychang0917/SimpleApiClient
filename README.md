@@ -22,7 +22,6 @@ dependencies {
     compile 'com.jaychang:simpleapiclient:2.0.0'
 }
 ```
-[![Download](https://api.bintray.com/packages/jaychang0917/maven/simpleapiclient/images/download.svg) ](https://bintray.com/jaychang0917/maven/simpleapiclient/_latestVersion)
 
 ---
 
