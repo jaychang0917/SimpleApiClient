@@ -1,7 +1,7 @@
 package com.jaychang.sac.converter
 
 import com.jaychang.sac.JsonParser
-import com.jaychang.sac.annotation.ResponseKeyPath
+import com.jaychang.sac.annotation.KeyPathResponse
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -18,10 +18,10 @@ class KeyPathResponseConverterFactory(val jsonParser: JsonParser) : Converter.Fa
 
   override fun responseBodyConverter(type: Type, annotations: Array<out Annotation>, retrofit: Retrofit): Converter<ResponseBody, *>? {
     // if the response type is not annotated @ResponseKeyPath, delegate to next converter
-    if (annotations.none { it is ResponseKeyPath }) {
+    if (annotations.none { it is KeyPathResponse }) {
       return null
     }
-    val keyPath = annotations.find { it is ResponseKeyPath } as ResponseKeyPath
+    val keyPath = annotations.find { it is KeyPathResponse } as KeyPathResponse
 
     val value = keyPath.value
     if (value.isBlank() || value.split(".").isEmpty()) {

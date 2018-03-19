@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 // kotlin do not support: `annotation class Unwrap(val value: KClass<out SimpleApiResult<*>>)`
 @Target(ElementType.METHOD)
-public @interface Unwrap {
+public @interface WrappedResponse {
   Class<? extends SimpleApiResult> value();
 }

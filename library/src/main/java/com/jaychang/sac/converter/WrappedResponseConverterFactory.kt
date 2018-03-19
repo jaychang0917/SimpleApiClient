@@ -2,7 +2,7 @@ package com.jaychang.sac.converter
 
 import com.google.gson.reflect.TypeToken
 import com.jaychang.sac.SimpleApiResult
-import com.jaychang.sac.annotation.Unwrap
+import com.jaychang.sac.annotation.WrappedResponse
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -19,11 +19,11 @@ class WrappedResponseConverterFactory : Converter.Factory() {
 
   override fun responseBodyConverter(type: Type, annotations: Array<out Annotation>, retrofit: Retrofit): Converter<ResponseBody, *>? {
     // if the response type is not annotated @Unwrap, delegate to next converter
-    if (annotations.none { it is Unwrap }) {
+    if (annotations.none { it is WrappedResponse }) {
       return null
     }
 
-    val wrappedType = annotations.find { it is Unwrap } as Unwrap
+    val wrappedType = annotations.find { it is WrappedResponse } as WrappedResponse
 
     val apiResultType = TypeToken.getParameterized(wrappedType.value.java, type).type
 

@@ -4,10 +4,10 @@ import android.content.Context
 import com.google.gson.reflect.TypeToken
 import com.jaychang.sac.JsonParser
 import com.jaychang.sac.SimpleApiResult
-import com.jaychang.sac.util.Utils
 import com.jaychang.sac.annotation.MockResponse
 import com.jaychang.sac.annotation.Status.*
-import com.jaychang.sac.annotation.Unwrap
+import com.jaychang.sac.annotation.WrappedResponse
+import com.jaychang.sac.util.Utils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -48,8 +48,8 @@ internal class MockResponseAdapterFactory(private val isEnabled: Boolean, privat
 
     init {
       val dataType = (type as ParameterizedType).actualTypeArguments[0]
-      apiResultType = if (annotations.any { it is Unwrap }) {
-        val wrappedType = annotations.find { it is Unwrap } as Unwrap
+      apiResultType = if (annotations.any { it is WrappedResponse }) {
+        val wrappedType = annotations.find { it is WrappedResponse } as WrappedResponse
         TypeToken.getParameterized(wrappedType.value.java, dataType).type
       } else {
         dataType
@@ -61,7 +61,7 @@ internal class MockResponseAdapterFactory(private val isEnabled: Boolean, privat
         if (mockAnnotation.json == -1) {
           Unit
         } else {
-          val json = Utils.text(context, mockAnnotation.json)
+          val json = Utils.toText(context, mockAnnotation.json)
           val data = jsonParser.parse<Any>(json, apiResultType)
           if (data is SimpleApiResult<Any>) {
             data.result
@@ -84,7 +84,7 @@ internal class MockResponseAdapterFactory(private val isEnabled: Boolean, privat
       val httpErrorObservable: (Int) -> Observable<Throwable> = { code ->
         Observable.error<Throwable> {
           val message = if (mockResponse.json != -1) {
-            Utils.text(context, mockResponse.json)
+            Utils.toText(context, mockResponse.json)
           } else {
             ""
           }
