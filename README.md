@@ -8,7 +8,7 @@ A configurable api client based on Retrofit2 and RxJava2 for android
 * [Basic Usage](#basic_usage)
 * [Unwrap Response by KeyPath](#unwrap_keypath)
 * [Unwrap Response by Wrapper Class](#unwrap_class)
-* [Serial / Parallel Calls](#serial_parallel_calls)
+* [Serial / Concurrent Calls](#serial_parallel_calls)
 * [Retry Interval / Exponential backoff](#retry)
 * [Call Cancellation](#call_cancel)
 * [Mock Response](#mock_response)
