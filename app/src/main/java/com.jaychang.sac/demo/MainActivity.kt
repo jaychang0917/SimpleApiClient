@@ -24,7 +24,5 @@ class MainActivity : AppCompatActivity(), Injectable {
         onSuccess = { println(it) },
         onError = { println(it.message) }
       )
-
   }
-
 }

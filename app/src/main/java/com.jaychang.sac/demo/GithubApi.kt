@@ -1,16 +1,15 @@
 package com.jaychang.sac.demo
 
-import android.net.Uri
 import com.google.gson.annotations.SerializedName
 import com.jaychang.sac.*
+import com.jaychang.sac.annotation.KeyPathResponse
 import com.jaychang.sac.annotation.MockResponse
-import com.jaychang.sac.annotation.MultiPart
-import com.jaychang.sac.annotation.ResponseKeyPath
-import com.jaychang.sac.demo.model.Image
 import com.jaychang.sac.demo.model.Repo
 import com.jaychang.sac.demo.model.User
 import io.reactivex.Observable
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 class ApiResult<T : Any> : SimpleApiResult<T> {
@@ -56,21 +55,10 @@ interface GithubApi {
   }
 
   @GET("/search/users")
-//  @Unwrap(ApiResult::class)
-  @ResponseKeyPath("foo.bar.items")
+  @KeyPathResponse("foo.bar.items")
   @MockResponse(R.raw.get_users)
   fun getUsers(@Query("q") query: String): Observable<List<User>>
 
   @GET("/repos/{user}/{repo}")
   fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Observable<Repo>
-
-  @POST("/upload")
-  fun uploadPhoto(@Body @MultiPart(name = "image", mimeType = "image/jpeg") file: Uri): Observable<Image>
-
-  // retrofit doesn't support wildcard parameter like List<out T>,
-  // you can solve it by using @JvmSuppressWildcards,
-  // or you can use ArrayList<T> which is not wildcard
-  @POST("/upload")
-  fun uploadPhotos(@Body @MultiPart(name = "image", mimeType = "image/jpeg") files: ArrayList<Uri>): Observable<Image>
-
 }
