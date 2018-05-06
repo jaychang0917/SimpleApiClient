@@ -8,7 +8,6 @@ A configurable api client based on Retrofit2 and RxJava2 for android
 * [Basic Usage](#basic_usage)
 * [Unwrap Response by KeyPath](#unwrap_keypath)
 * [Unwrap Response by Wrapper Class](#unwrap_class)
-* [Convert Uri to MultiPartBody](#image)
 * [Serial / Parallel Calls](#serial_parallel_calls)
 * [Retry Interval / Exponential backoff](#retry)
 * [Call Cancellation](#call_cancel)
@@ -19,7 +18,7 @@ In your app level build.gradle :
 
 ```java
 dependencies {
-    compile 'com.jaychang:simpleapiclient:2.0.0'
+    compile 'com.jaychang:simpleapiclient:2.1.0'
 }
 ```
 
@@ -37,18 +36,21 @@ interface GithubApi {
         baseUrl = "https://api.github.com" 
         errorClass = ApiError::class // should be conformed to SimpleApiError
         errorMessageKeyPath = "meta.message"
+
         defaultParameters = mapOf()
         defaultHeaders = mapOf()
         connectTimeout = TimeUnit.MINUTES.toMillis(1)
         readTimeout = TimeUnit.MINUTES.toMillis(1)
         writeTimeout = TimeUnit.MINUTES.toMillis(1)
-        enableStetho = true // default true
+        isStethoEnabled = true // default true
         logLevel = LogLevel.BASIC // default NONE
         isMockResponseEnabled = true // default false
         certificatePins = listOf(
           CertificatePin(hostname = "api.foo.com", sha1PublicKeyHash = "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
           CertificatePin(hostname = "api.bar.com", sha256PublicKeyHash = "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9")
         )
+        httpClient = yourOwnClient
+
         jsonParser = GsonParser() // default: GsonParser
         errorHandler = { error ->
           // you can centralize the handling of general error here
@@ -118,10 +120,10 @@ Assuming the response json looks like the following:
   }
 }
 ```
-And you only want the `items` part, use `@ResponseKeyPath("keypath")` annotation to indicate which part of response you want. 
+And you only want the `items` part, use `@KeyPathResponse("keypath")` annotation to indicate which part of response you want.
 ```kotlin
 @GET("/search/users")
-@ResponseKeyPath("foo.bar.items")
+@KeyPathResponse("foo.bar.items")
 fun getUsers(@Query("q") query: String): Observable<List<User>>
 ```
 
@@ -141,7 +143,7 @@ interface JsonParser {
 [The default `GsonParser` implementation](https://github.com/jaychang0917/SimpleApiClient/blob/master/library/src/main/java/com/jaychang/sac/GsonParser.kt)
 
 ## <a name=unwrap_class>Unwrap Response by Wrapper Class</a>
-An alternative solution is that you can create a wrapper class that conforming `SimpleApiResult<T>`, and use `@Unwrap(class)` to indicate that you want an unwrapped response of that wrapper class. 
+An alternative solution is that you can create a wrapper class that conforming `SimpleApiResult<T>`, and use `@WrappedResponse(class)` to indicate that you want an unwrapped response of that wrapper class.
 
 ```kotlin
 class ApiResult<T: Any>: SimpleApiResult<T> {
@@ -149,26 +151,11 @@ class ApiResult<T: Any>: SimpleApiResult<T> {
 }
 
 @GET("/search/users")
-@Unwrap(ApiResult::class)
+@WrappedResponse(ApiResult::class)
 fun getUsers(@Query("q") query: String): Observable<List<User>>
 ```
 
-## <a name=image>Convert Uri to MultiPartBody</a>
-Use `@MultiPart` to annotate a `Uri` or `ArrayList<Uri>` that is going to be converted to `MultiPartBody`
-```kotlin
-@POST("/upload")
-fun uploadPhoto(@Body @MultiPart(name = "image", mimeType = "image/jpeg") file: Uri): Observable<Image>
-
-@POST("/upload")
-fun uploadPhotos(@Body @MultiPart(name = "image", mimeType = "image/jpeg") files: ArrayList<Uri>): Observable<Image>
-```
-
-```kotlin
-githubApi.uploadPhoto(uri)
-  .observe(...)
-```
-
-## <a name=serial_parallel_calls>Serial / Parallel Calls</a>
+## <a name=serial_parallel_calls>Serial / Concurrent Calls</a>
 ### Serial
 ```kotlin
 githubApi.foo()
@@ -176,7 +163,7 @@ githubApi.foo()
   .observe(...)
 ```
 
-### Serial then Parallel
+### Serial then Concurrent
 ```kotlin
 githubApi.foo()
   .then { foo -> githubApi.bar(foo.name) }
@@ -187,7 +174,7 @@ githubApi.foo()
   .observe(...)
 ```
 
-### Parallel
+### Concurrent
 ```kotlin
 SimpleApiClient.all(
   githubApi.foo(),
@@ -195,7 +182,7 @@ SimpleApiClient.all(
 ).observe(...)
 ```
 
-### Parallel then Serial
+### Concurrent then Serial
 ```kotlin
 SimpleApiClient.all(
   githubApi.foo(),
