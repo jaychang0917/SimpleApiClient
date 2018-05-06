@@ -1,5 +1,9 @@
 ## Change Log
 
+### Version 2.1.0 (6 May 2018)
+- Remove Uri-to-MultipartBody feature
+- Rename some files and class members
+
 ### Version 1.11.0 (20 Oct 2017)
 - New: Add `autoCancel(LifecycleOwner, Lifecycle.Event)` for cancelling call until specific event occurs
 - Fix: keypath parsing issue
