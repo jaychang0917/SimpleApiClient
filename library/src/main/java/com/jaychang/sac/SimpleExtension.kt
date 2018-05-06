@@ -3,6 +3,7 @@ package com.jaychang.sac
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.view.View
+import com.jaychang.sac.util.Utils
 import com.uber.autodispose.AutoDispose
 import com.uber.autodispose.ObservableSubscribeProxy
 import com.uber.autodispose.android.ViewScopeProvider
@@ -11,6 +12,10 @@ import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 fun <T, R> Observable<T>.then(mapper: (T) -> ObservableSource<R>): Observable<R> {
@@ -74,4 +79,8 @@ fun <T> AutoDisposeViewProxy<T>.observe(onStart: () -> Unit = {}, onEnd: () -> U
 fun <T> Observable<T>.observe(onStart: () -> Unit = {}, onEnd: () -> Unit = {}, onSuccess: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}): Cancelable {
   return Cancelable(doOnSubscribe { onStart() }.doFinally { onEnd() }
     .subscribe(Consumer { onSuccess(it) }, ErrorConsumer(onError)))
+}
+
+fun File.toMultipartBodyPart(paramName: String, mimeType: String = Utils.getMimeType(this)) {
+  MultipartBody.Part.createFormData(paramName, name, RequestBody.create(MediaType.parse(mimeType), this))
 }

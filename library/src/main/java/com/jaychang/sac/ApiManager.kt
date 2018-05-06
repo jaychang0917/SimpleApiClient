@@ -7,7 +7,6 @@ import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.jaychang.sac.calladapter.MockResponseAdapterFactory
 import com.jaychang.sac.calladapter.ObserveOnCallAdapterFactory
 import com.jaychang.sac.converter.KeyPathResponseConverterFactory
-import com.jaychang.sac.converter.MultiPartConverterFactory
 import com.jaychang.sac.converter.WrappedResponseConverterFactory
 import com.jaychang.sac.interceptor.HeaderInterceptor
 import com.jaychang.sac.interceptor.ParameterInterceptor
@@ -59,9 +58,11 @@ object ApiManager {
       builder.addNetworkInterceptor(StethoInterceptor())
     }
 
-    val httpLoggingInterceptor = HttpLoggingInterceptor()
-    httpLoggingInterceptor.level = config.logLevel
-    builder.addInterceptor(httpLoggingInterceptor)
+    if (config.logLevel != LogLevel.NONE) {
+      val httpLoggingInterceptor = HttpLoggingInterceptor()
+      httpLoggingInterceptor.level = config.logLevel
+      builder.addInterceptor(httpLoggingInterceptor)
+    }
 
     config.defaultParameters?.let {
       builder.addInterceptor(ParameterInterceptor(it))
@@ -100,7 +101,6 @@ object ApiManager {
       .baseUrl(config.baseUrl).client(client)
       .addConverterFactory(KeyPathResponseConverterFactory.create(jsonParser))
       .addConverterFactory(WrappedResponseConverterFactory.create())
-      .addConverterFactory(MultiPartConverterFactory.create())
       .addConverterFactory(jsonParser.converterFactory())
       .addCallAdapterFactory(MockResponseAdapterFactory.create(config.isMockResponseEnabled, context, jsonParser))
       .addCallAdapterFactory(ObserveOnCallAdapterFactory.create(AndroidSchedulers.mainThread()))
