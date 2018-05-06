@@ -93,7 +93,7 @@ object ApiManager {
       .readTimeout(config.readTimeout, TimeUnit.MILLISECONDS)
       .writeTimeout(config.writeTimeout, TimeUnit.MILLISECONDS)
 
-    return builder.build()
+    return config.httpClient ?: builder.build()
   }
 
   private fun createRetrofit(config: SimpleApiClient.Config, client: OkHttpClient): Retrofit {

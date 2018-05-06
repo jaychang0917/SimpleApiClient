@@ -1,6 +1,7 @@
 package com.jaychang.sac
 
 import io.reactivex.Observable
+import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
@@ -22,6 +23,7 @@ open class SimpleApiClient {
     var certificatePins: List<CertificatePin>? = null,
     var isStethoEnabled: Boolean = true,
     var logLevel: LogLevel = LogLevel.NONE,
+    var httpClient: OkHttpClient? = null,
     var isMockResponseEnabled: Boolean = false,
     var jsonParser: JsonParser = GsonParser()
   )
