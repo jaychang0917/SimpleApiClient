@@ -27,7 +27,7 @@ open class SimpleApiClient {
     var errorClass: KClass<out SimpleApiError>? = null,
     var errorMessageKeyPath: String? = null,
     var errorHandler: ((Throwable) -> Unit)? = null,
-    var jsonParser: JsonParser = GsonJsonParser()
+    var jsonParser: JsonParser? = null
   )
 
   companion object {

@@ -29,14 +29,14 @@ android {
 }
 
 dependencies {
-    api deps.support.appcompat
-    api deps.kotlin.stdlib
+    implementation deps.support.appcompat
+    implementation deps.kotlin.stdlib
     api deps.rxJava2
     api deps.rxAndroid
     api deps.retrofit2.core
     api deps.retrofit2.adapterRxJava2
     api deps.okhttp3.logging
-    api deps.gson
+    implementation deps.gson
     implementation deps.autodispose.android
     implementation deps.autodispose.arch
 }

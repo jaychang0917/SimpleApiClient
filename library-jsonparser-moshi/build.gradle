@@ -30,6 +30,7 @@ android {
 
 dependencies {
     compileOnly project(':library')
+    implementation deps.kotlin.stdlib
     api deps.retrofit2.converterMoshi
     api deps.moshi.core
     api deps.moshi.kotlin

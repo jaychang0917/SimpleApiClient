@@ -1,4 +1,4 @@
-package com.jaychang.sac.jsonparser
+package com.jaychang.sac.jsonparser.gson
 
 import com.google.gson.*
 import retrofit2.Converter

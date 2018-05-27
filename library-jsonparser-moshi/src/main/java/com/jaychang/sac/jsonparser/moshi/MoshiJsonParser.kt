@@ -1,5 +1,6 @@
-package com.jaychang.sac
+package com.jaychang.sac.jsonparser.moshi
 
+import com.jaychang.sac.JsonParser
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter

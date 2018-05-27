@@ -30,6 +30,7 @@ android {
 
 dependencies {
     compileOnly project(':library')
+    implementation deps.kotlin.stdlib
     api deps.retrofit2.converterGson
     api deps.gson
 }

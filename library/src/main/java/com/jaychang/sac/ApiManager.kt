@@ -29,7 +29,7 @@ object ApiManager {
   internal lateinit var jsonParser: JsonParser
 
   fun init(config: SimpleApiClient.Config): Retrofit {
-    this.jsonParser = config.jsonParser
+    this.jsonParser = config.jsonParser ?: throw IllegalArgumentException("jsonParser cannot be null")
     this.errorClass = config.errorClass
     this.errorMessageKeyPath = config.errorMessageKeyPath
 
