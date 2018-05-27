@@ -18,7 +18,11 @@ In your app level build.gradle :
 
 ```java
 dependencies {
-    compile 'com.jaychang:simpleapiclient:2.1.0'
+    implementation 'com.jaychang:simpleapiclient:2.2.0'
+    // if you use gson
+    implementation 'com.jaychang:simpleapiclient-jsonparser-gson:2.2.0'
+    // if you use moshi
+    implementation 'com.jaychang:simpleapiclient-jsonparser-moshi:2.2.0'
 }
 ```
 
@@ -33,25 +37,27 @@ interface GithubApi {
   companion object {
     fun create() : GithubApi =
       SimpleApiClient.create {
-        baseUrl = "https://api.github.com" 
-        errorClass = ApiError::class // should be conformed to SimpleApiError
-        errorMessageKeyPath = "meta.message"
+        baseUrl = "https://api.github.com"
 
         defaultParameters = mapOf()
         defaultHeaders = mapOf()
         connectTimeout = TimeUnit.MINUTES.toMillis(1)
         readTimeout = TimeUnit.MINUTES.toMillis(1)
         writeTimeout = TimeUnit.MINUTES.toMillis(1)
-        isStethoEnabled = true // default true
         logLevel = LogLevel.BASIC // default NONE
         isMockResponseEnabled = true // default false
         certificatePins = listOf(
           CertificatePin(hostname = "api.foo.com", sha1PublicKeyHash = "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
           CertificatePin(hostname = "api.bar.com", sha256PublicKeyHash = "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9")
         )
-        httpClient = yourOwnClient
 
-        jsonParser = GsonParser() // default: GsonParser
+        interceptors = listOf()
+        networkInterceptors = listOf()
+        httpClient = OkHttpClient.Builder().build() // your own http client
+
+        errorClass = ApiError::class // should be conformed to SimpleApiError
+        errorMessageKeyPath = "meta.message"
+        jsonParser = MoshiJsonParser()
         errorHandler = { error ->
           // you can centralize the handling of general error here
           when (error) {
@@ -70,21 +76,6 @@ interface GithubApi {
 
 }
 ````
-
-#### Custom JSON Parser
-The library uses Gson to parse json by default, you can create your own json parser by implementing `JsonParser` interface.
-```kotlin
-class MoshiParser : JsonParser {
-  var moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-
-  override fun converterFactory(): Converter.Factory = MoshiConverterFactory.create(moshi)
-
-  override fun <T> parse(json: String, typeOfT: Type): T {
-    val jsonAdapter = moshi.adapter<T>(typeOfT)
-    return jsonAdapter.fromJson(json)!!
-  }
-}
-```
 
 ### Step 2
 Use `observe()` to enqueue the call, do your stuff in corresponding parameter block. All blocks are run on android main thread by default and they are optional.
@@ -128,19 +119,6 @@ fun getUsers(@Query("q") query: String): Observable<List<User>>
 ```
 
 Similarly, unwrap the error response by setting the `errorMessageKeyPath` of `SimpleApiClient.Config`
-
-**This feature is only available for default gson parser, if you use other json parser like *moshi*, you should implement the following method of `JsonParser`**
-```kotlin
-interface JsonParser {
-
-  // this method is called before the api response parsing
-  fun update(type: Type, keyPath: String) {
-    
-  }
-
-}
-```
-[The default `GsonParser` implementation](https://github.com/jaychang0917/SimpleApiClient/blob/master/library/src/main/java/com/jaychang/sac/GsonParser.kt)
 
 ## <a name=unwrap_class>Unwrap Response by Wrapper Class</a>
 An alternative solution is that you can create a wrapper class that conforming `SimpleApiResult<T>`, and use `@WrappedResponse(class)` to indicate that you want an unwrapped response of that wrapper class.
