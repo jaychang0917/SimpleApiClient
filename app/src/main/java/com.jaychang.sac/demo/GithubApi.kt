@@ -28,20 +28,26 @@ interface GithubApi {
     fun create(): GithubApi =
       SimpleApiClient.create {
         baseUrl = "https://api.github.com"
-        errorMessageKeyPath = "message"
         defaultParameters = mapOf()
         defaultHeaders = mapOf()
         connectTimeout = TimeUnit.MINUTES.toMillis(1)
         readTimeout = TimeUnit.MINUTES.toMillis(1)
         writeTimeout = TimeUnit.MINUTES.toMillis(1)
-        isStethoEnabled = true // default: true
         logLevel = LogLevel.BASIC // default: NONE
-        isMockResponseEnabled = true // default: false
         certificatePins = listOf(
           CertificatePin(hostname = "api.foo.com", sha1PublicKeyHash = "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
           CertificatePin(hostname = "api.bar.com", sha256PublicKeyHash = "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9")
         )
-        jsonParser = GsonParser() // default: GsonParser
+
+        interceptors = listOf()
+        networkInterceptors = listOf()
+        //httpClient = OkHttpClient.Builder().build() // your own http client, above configs will be overwritten
+
+        errorMessageKeyPath = "message"
+        //errorClass = ApiError::class
+        isMockResponseEnabled = true // default: false
+
+        jsonParser = GsonJsonParser() // default: GsonParser
         errorHandler = { error ->
           when (error) {
             is AuthenticationError -> {}

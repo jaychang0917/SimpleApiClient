@@ -38,8 +38,6 @@ dependencies {
     api deps.retrofit2.adapterRxJava2
     api deps.okhttp3.logging
     api deps.gson
-    implementation deps.stetho.core
-    implementation deps.stetho.okhttp3
     implementation deps.autodispose.android
     implementation deps.autodispose.arch
 }

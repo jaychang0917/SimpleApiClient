@@ -2,8 +2,6 @@ package com.jaychang.sac
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.facebook.stetho.Stetho
-import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.jaychang.sac.calladapter.MockResponseAdapterFactory
 import com.jaychang.sac.calladapter.ObserveOnCallAdapterFactory
 import com.jaychang.sac.converter.KeyPathResponseConverterFactory
@@ -53,11 +51,6 @@ object ApiManager {
   private fun createOkHttpClient(config: SimpleApiClient.Config): OkHttpClient {
     val builder = OkHttpClient.Builder()
 
-    if (config.isStethoEnabled) {
-      Stetho.initializeWithDefaults(context.applicationContext)
-      builder.addNetworkInterceptor(StethoInterceptor())
-    }
-
     if (config.logLevel != LogLevel.NONE) {
       val httpLoggingInterceptor = HttpLoggingInterceptor()
       httpLoggingInterceptor.level = config.logLevel
@@ -70,6 +63,14 @@ object ApiManager {
 
     config.defaultHeaders?.let {
       builder.addInterceptor(HeaderInterceptor(it))
+    }
+
+    config.networkInterceptors?.forEach {
+      builder.addNetworkInterceptor(it)
+    }
+
+    config.interceptors?.forEach {
+      builder.addInterceptor(it)
     }
 
     config.certificatePins?.let {
@@ -101,7 +102,7 @@ object ApiManager {
       .baseUrl(config.baseUrl).client(client)
       .addConverterFactory(KeyPathResponseConverterFactory.create(jsonParser))
       .addConverterFactory(WrappedResponseConverterFactory.create())
-      .addConverterFactory(jsonParser.converterFactory())
+      .addConverterFactory(jsonParser.getConverterFactory())
       .addCallAdapterFactory(MockResponseAdapterFactory.create(config.isMockResponseEnabled, context, jsonParser))
       .addCallAdapterFactory(ObserveOnCallAdapterFactory.create(AndroidSchedulers.mainThread()))
       .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
