@@ -55,9 +55,9 @@ interface GithubApi {
         networkInterceptors = listOf()
         httpClient = OkHttpClient.Builder().build() // your own http client
 
+        jsonParser = MoshiJsonParser()
         errorClass = ApiError::class // should be conformed to SimpleApiError
         errorMessageKeyPath = "meta.message"
-        jsonParser = MoshiJsonParser()
         errorHandler = { error ->
           // you can centralize the handling of general error here
           when (error) {
