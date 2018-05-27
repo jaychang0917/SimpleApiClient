@@ -4,8 +4,7 @@ import retrofit2.Converter
 import java.lang.reflect.Type
 
 interface JsonParser {
-
-  fun converterFactory(): Converter.Factory
+  fun getConverterFactory(): Converter.Factory
 
   fun <T> parse(json: String, typeOfT: Type, keyPath: String? = null): T
 
@@ -14,5 +13,4 @@ interface JsonParser {
    * */
   fun update(type: Type, keyPath: String) {
   }
-
 }

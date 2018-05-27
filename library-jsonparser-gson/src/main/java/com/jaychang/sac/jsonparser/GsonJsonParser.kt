@@ -1,15 +1,15 @@
-package com.jaychang.sac
+package com.jaychang.sac.jsonparser
 
 import com.google.gson.*
 import retrofit2.Converter
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
 
-class GsonParser : JsonParser {
+class GsonJsonParser : com.jaychang.sac.JsonParser {
 
   private var gson = Gson()
 
-  override fun converterFactory(): Converter.Factory {
+  override fun getConverterFactory(): Converter.Factory {
     return GsonConverterFactory.create(gson)
   }
 

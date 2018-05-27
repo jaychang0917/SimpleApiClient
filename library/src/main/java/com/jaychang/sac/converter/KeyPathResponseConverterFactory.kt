@@ -7,7 +7,7 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import java.lang.reflect.Type
 
-class KeyPathResponseConverterFactory(val jsonParser: JsonParser) : Converter.Factory() {
+class KeyPathResponseConverterFactory(private val jsonParser: JsonParser) : Converter.Factory() {
 
   companion object {
     @JvmStatic
@@ -21,8 +21,8 @@ class KeyPathResponseConverterFactory(val jsonParser: JsonParser) : Converter.Fa
     if (annotations.none { it is KeyPathResponse }) {
       return null
     }
-    val keyPath = annotations.find { it is KeyPathResponse } as KeyPathResponse
 
+    val keyPath = annotations.find { it is KeyPathResponse } as KeyPathResponse
     val value = keyPath.value
     if (value.isBlank() || value.split(".").isEmpty()) {
       return null

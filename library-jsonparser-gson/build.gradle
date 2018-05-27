@@ -29,22 +29,15 @@ android {
 }
 
 dependencies {
-    api deps.support.appcompat
-    api deps.kotlin.stdlib
-    api deps.rxJava2
-    api deps.rxAndroid
-    api deps.retrofit2.core
-    api deps.retrofit2.adapterRxJava2
-    api deps.okhttp3.logging
+    compileOnly project(':library')
+    api deps.retrofit2.converterGson
     api deps.gson
-    implementation deps.autodispose.android
-    implementation deps.autodispose.arch
 }
 
 publish {
     userOrg = 'jaychang0917'
     groupId = 'com.jaychang'
-    artifactId = 'simpleapiclient'
+    artifactId = 'simpleapiclient-jsonparser-gson'
     publishVersion = '2.1.0'
     desc = 'A configurable api client based on Retrofit2 and RxJava2 for android.'
     website = 'https://github.com/jaychang0917/SimpleApiClient'
