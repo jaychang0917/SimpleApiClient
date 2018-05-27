@@ -7,6 +7,7 @@ buildscript {
         jcenter()
     }
     dependencies {
+        classpath deps.build.gradlePlugins.kotlin
         classpath deps.build.gradlePlugins.bintray
     }
 }
