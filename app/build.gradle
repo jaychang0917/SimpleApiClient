@@ -28,13 +28,9 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':library')
     implementation deps.kotlin.stdlib
     implementation deps.support.appcompat
-    implementation deps.dagger2.core
-    kapt deps.dagger2.compiler
-    implementation deps.dagger2.androidSupport
-    kapt deps.dagger2.androidProcessor
-    implementation deps.moshi
-    implementation deps.retrofit2.converterMoshi
+    implementation project(':library')
+    implementation project(':library-jsonparser-gson')
+    implementation project(':library-jsonparser-moshi')
 }

@@ -1,24 +1,22 @@
 package com.jaychang.sac.demo
 
-import com.google.gson.annotations.SerializedName
 import com.jaychang.sac.*
 import com.jaychang.sac.annotation.KeyPathResponse
 import com.jaychang.sac.annotation.MockResponse
-import com.jaychang.sac.demo.model.Repo
-import com.jaychang.sac.demo.model.User
+import com.jaychang.sac.jsonparser.moshi.MoshiJsonParser
+import com.squareup.moshi.Json
 import io.reactivex.Observable
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 class ApiResult<T : Any> : SimpleApiResult<T> {
-  @SerializedName("items")
+  @Json(name = "items")
   override lateinit var result: T
 }
 
 class ApiError : SimpleApiError {
-  @SerializedName("message")
+  @Json(name = "message")
   override lateinit var message: String
 }
 
@@ -47,7 +45,7 @@ interface GithubApi {
         //errorClass = ApiError::class
         isMockResponseEnabled = true // default: false
 
-        jsonParser = GsonJsonParser() // default: GsonParser
+        jsonParser = MoshiJsonParser()
         errorHandler = { error ->
           when (error) {
             is AuthenticationError -> {}
@@ -62,9 +60,7 @@ interface GithubApi {
 
   @GET("/search/users")
   @KeyPathResponse("foo.bar.items")
+//  @WrappedResponse(ApiResult::class)
   @MockResponse(R.raw.get_users)
   fun getUsers(@Query("q") query: String): Observable<List<User>>
-
-  @GET("/repos/{user}/{repo}")
-  fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Observable<Repo>
 }
