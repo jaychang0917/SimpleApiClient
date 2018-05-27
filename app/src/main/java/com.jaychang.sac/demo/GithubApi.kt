@@ -39,7 +39,7 @@ interface GithubApi {
 
         interceptors = listOf()
         networkInterceptors = listOf()
-        //httpClient = OkHttpClient.Builder().build() // your own http client, above configs will be overwritten
+        //httpClient = OkHttpClient.Builder().build()
 
         errorMessageKeyPath = "message"
         //errorClass = ApiError::class
