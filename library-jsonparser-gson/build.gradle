@@ -40,7 +40,7 @@ publish {
     userOrg = 'jaychang0917'
     groupId = 'com.jaychang'
     artifactId = 'simpleapiclient-jsonparser-gson'
-    publishVersion = '2.2.0'
+    publishVersion = '2.3.0'
     desc = 'A configurable api client based on Retrofit2 and RxJava2 for android.'
     website = 'https://github.com/jaychang0917/SimpleApiClient'
 }
