@@ -8,7 +8,6 @@ import retrofit2.Retrofit
 import java.lang.reflect.Type
 
 class KeyPathResponseConverterFactory(private val jsonParser: JsonParser) : Converter.Factory() {
-
   companion object {
     @JvmStatic
     fun create(jsonParser: JsonParser): KeyPathResponseConverterFactory {
@@ -34,5 +33,4 @@ class KeyPathResponseConverterFactory(private val jsonParser: JsonParser) : Conv
       jsonParser.parse<Any>(body.string(), type)
     }
   }
-
 }

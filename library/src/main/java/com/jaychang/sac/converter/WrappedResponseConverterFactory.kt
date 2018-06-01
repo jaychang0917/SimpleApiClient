@@ -9,7 +9,6 @@ import retrofit2.Retrofit
 import java.lang.reflect.Type
 
 class WrappedResponseConverterFactory : Converter.Factory() {
-
   companion object {
     @JvmStatic
     fun create(): WrappedResponseConverterFactory {
@@ -33,5 +32,4 @@ class WrappedResponseConverterFactory : Converter.Factory() {
       (delegate.convert(body) as SimpleApiResult<Any>).result
     }
   }
-
 }

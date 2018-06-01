@@ -10,7 +10,6 @@ import kotlin.reflect.KClass
 typealias LogLevel = HttpLoggingInterceptor.Level
 
 open class SimpleApiClient {
-
   data class Config(
     var baseUrl: String = "",
     var connectTimeout: Long = TimeUnit.MINUTES.toMillis(1),
@@ -43,5 +42,4 @@ open class SimpleApiClient {
       return Observable.zip(calls.asIterable(), { objects -> objects })
     }
   }
-
 }

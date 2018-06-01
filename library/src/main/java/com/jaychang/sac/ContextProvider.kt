@@ -6,7 +6,6 @@ import android.database.Cursor
 import android.net.Uri
 
 class ContextProvider : ContentProvider() {
-
   override fun onCreate(): Boolean {
     ApiManager.context = context.applicationContext
     return true
@@ -21,5 +20,4 @@ class ContextProvider : ContentProvider() {
   override fun delete(p0: Uri?, p1: String?, p2: Array<out String>?): Int = 0
 
   override fun getType(p0: Uri?): String? = null
-
 }

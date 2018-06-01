@@ -20,9 +20,7 @@ import java.net.UnknownHostException
 import javax.net.ssl.SSLPeerUnverifiedException
 
 internal class MockResponseAdapterFactory(private val isEnabled: Boolean, private val context: Context, private val jsonParser: JsonParser) : CallAdapter.Factory() {
-
   companion object {
-    @JvmStatic
     fun create(isEnabled: Boolean, context: Context, jsonParser: JsonParser): MockResponseAdapterFactory {
       return MockResponseAdapterFactory(isEnabled, context, jsonParser)
     }
@@ -79,7 +77,6 @@ internal class MockResponseAdapterFactory(private val isEnabled: Boolean, privat
   }
 
   inner class ErrorStatusCallAdapter(private val type: Type, private val mockResponse: MockResponse) : CallAdapter<Any, Observable<Throwable>> {
-
     override fun adapt(call: Call<Any>?): Observable<Throwable> {
       val httpErrorObservable: (Int) -> Observable<Throwable> = { code ->
         Observable.error<Throwable> {
@@ -106,7 +103,5 @@ internal class MockResponseAdapterFactory(private val isEnabled: Boolean, privat
     override fun responseType(): Type {
       return type
     }
-
   }
-
 }

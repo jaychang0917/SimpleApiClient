@@ -22,7 +22,6 @@ import kotlin.reflect.KClass
 
 @SuppressLint("StaticFieldLeak")
 object ApiManager {
-
   internal var errorClass: KClass<out SimpleApiError>? = null
   internal var errorMessageKeyPath: String? = null
   internal lateinit var context: Context
@@ -108,5 +107,4 @@ object ApiManager {
       .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
       .build()
   }
-
 }
