@@ -5,7 +5,7 @@ import com.jaychang.sac.annotation.KeyPathResponse
 import com.jaychang.sac.annotation.MockResponse
 import com.jaychang.sac.jsonparser.moshi.MoshiJsonParser
 import com.squareup.moshi.Json
-import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
@@ -62,5 +62,5 @@ interface GithubApi {
   @KeyPathResponse("foo.bar.items")
 //  @WrappedResponse(ApiResult::class)
   @MockResponse(R.raw.get_users)
-  fun getUsers(@Query("q") query: String): Observable<List<User>>
+  fun getUsers(@Query("q") query: String): Single<List<User>>
 }
