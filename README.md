@@ -18,11 +18,11 @@ In your app level build.gradle :
 
 ```java
 dependencies {
-    implementation 'com.jaychang:simpleapiclient:2.2.0'
+    implementation 'com.jaychang:simpleapiclient:2.3.0'
     // if you use gson
-    implementation 'com.jaychang:simpleapiclient-jsonparser-gson:2.2.0'
+    implementation 'com.jaychang:simpleapiclient-jsonparser-gson:2.3.0'
     // if you use moshi
-    implementation 'com.jaychang:simpleapiclient-jsonparser-moshi:2.2.0'
+    implementation 'com.jaychang:simpleapiclient-jsonparser-moshi:2.3.0'
 }
 ```
 
@@ -180,18 +180,18 @@ githubApi.getUsers("google")
 
 ## <a name=call_cancel>Call Cancellation</a>
 ### Auto Call Cancellation
-To avoid leaking context, we should cancel the executing api request when leave the context. Thanks to [AutoDispose](https://github.com/uber/AutoDispose), it is just a line of code to fix it. The api call will be cancelled automatically in corresponding lifecycle callback. For instance, an api call is made in `onStart()`, it be will cancelled automatically in `onStop`.
+The api call will be cancelled automatically in corresponding lifecycle callback. For instance, an api call is made in `onStart()`, it be will cancelled automatically in `onStop`.
 
 ```kotlin
 githubApi.getUsers("google")
-  .autoCancel(this)
+  .autoDispose(this)
   .observe(...)
 ```
 ### Cancel call manually
 ```kotlin
 val call = githubApi.getUsers("google").observe(...)
 
-call.cancel()
+call.dispose()
 ```
 
 ## <a name=mock_response>Mock Response</a>
@@ -202,7 +202,7 @@ To make the api return a successful response with provided json
 ```kotlin
 @GET("/repos/{user}/{repo}")
 @MockResponse(R.raw.get_repo)
-fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Observable<Repo>
+fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Single<Repo>
 ```
 
 ### Mock status
@@ -210,7 +210,7 @@ To make the api return a client side error with provided json
 ```kotlin
 @GET("/repos/{user}/{repo}")
 @MockResponse(json = R.raw.get_repo_error, status = Status.CLIENT_ERROR)
-fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Observable<Repo>
+fun getRepo(@Path("user") user: String, @Path("repo") repo: String): Single<Repo>
 ```
 `json` parameter of `MockResponse` is optional, you can set the status only, then you receive empty string.
 
@@ -220,11 +220,11 @@ enum class Status {
   SUCCESS, AUTHENTICATION_ERROR, CLIENT_ERROR, SERVER_ERROR, NETWORK_ERROR, SSL_ERROR
 }
 ```
-To mock a response with success status only, you should return `Observable<Unit>`.
+To mock a response with success status only, you should return `Completable`.
 ```kotlin
 @DELETE("/repo/{id}}")
 @MockResponse(status = Status.SUCCESS)
-fun deleteRepo(@Path("id") id: String): Observable<Unit>
+fun deleteRepo(@Path("id") id: String): Completable
 ```
 
 ## License

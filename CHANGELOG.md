@@ -1,5 +1,9 @@
 ## Change Log
 
+### Version 2.3.0 (1 June 2018)
+- Support other rx return types (i.e. `Flowable`, `Single`, `Maybe`, `Completable`)
+- Rename `autoCancel` to `autoDispose`
+
 ### Version 2.2.0 (27 May 2018)
 - Now the library doesn't depend on gson to parse data
 - Add `GsonJsonParser` and `MoshiJsonParser`
