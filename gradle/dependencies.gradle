@@ -4,7 +4,7 @@ def versions = [
     dagger2: '2.11',
     retrofit2: '2.4.0',
     moshi: '1.6.0',
-    autodispose: '0.4.0'
+    rxLifecycle: '2.2.1'
 ]
 
 def build = [
@@ -59,9 +59,9 @@ def dagger2 = [
     androidProcessor: "com.google.dagger:dagger-android-processor:${versions.dagger2}"
 ]
 
-def autodispose = [
-    android: "com.uber.autodispose:autodispose-android:${versions.autodispose}",
-    arch: "com.uber.autodispose:autodispose-android-archcomponents:${versions.autodispose}"
+def rxLifecycle = [
+    core: "com.trello.rxlifecycle2:rxlifecycle:${versions.rxLifecycle}",
+    kotlin: "com.trello.rxlifecycle2:rxlifecycle-android-lifecycle-kotlin:${versions.rxLifecycle}"
 ]
 
 ext.deps = [
@@ -76,5 +76,5 @@ ext.deps = [
     "okhttp3": okhttp3,
     "gson": gson,
     "dagger2": dagger2,
-    "autodispose": autodispose
+    "rxLifecycle": rxLifecycle
 ]

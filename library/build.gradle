@@ -37,8 +37,8 @@ dependencies {
     api deps.retrofit2.adapterRxJava2
     api deps.okhttp3.logging
     implementation deps.gson
-    implementation deps.autodispose.android
-    implementation deps.autodispose.arch
+    implementation deps.rxLifecycle.core
+    implementation deps.rxLifecycle.kotlin
 }
 
 publish {
