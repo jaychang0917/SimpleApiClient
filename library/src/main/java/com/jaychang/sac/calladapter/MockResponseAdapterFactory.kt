@@ -61,25 +61,27 @@ internal class MockResponseAdapterFactory(private val isEnabled: Boolean, privat
                                  private val isSingle: Boolean,
                                  private val isMaybe: Boolean,
                                  private val isCompletable: Boolean) : CallAdapter<Any?, Any?> {
-    private var apiResultType: Type
+    private var apiResultType: Type? = null
 
     init {
-      val dataType = (type as ParameterizedType).actualTypeArguments[0]
-      apiResultType = if (annotations.any { it is WrappedResponse }) {
-        val wrappedType = annotations.find { it is WrappedResponse } as WrappedResponse
-        TypeToken.getParameterized(wrappedType.value.java, dataType).type
-      } else {
-        dataType
+      if (!isCompletable) {
+        val dataType = (type as ParameterizedType).actualTypeArguments[0]
+        apiResultType = if (annotations.any { it is WrappedResponse }) {
+          val wrappedType = annotations.find { it is WrappedResponse } as WrappedResponse
+          TypeToken.getParameterized(wrappedType.value.java, dataType).type
+        } else {
+          dataType
+        }
       }
     }
 
     override fun adapt(call: Call<Any?>?): Any? {
       val callable = {
-        if (mockAnnotation.json == -1) {
+        if (mockAnnotation.json == -1 || isCompletable) {
           Unit
         } else {
           val json = Utils.toText(context, mockAnnotation.json)
-          val data = jsonParser.parse<Any>(json, apiResultType)
+          val data = jsonParser.parse<Any>(json, apiResultType!!)
           if (data is SimpleApiResult<Any>) {
             data.result
           } else {
@@ -92,13 +94,13 @@ internal class MockResponseAdapterFactory(private val isEnabled: Boolean, privat
         isFlowable -> Flowable.fromCallable(callable).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
         isSingle -> Single.fromCallable(callable).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
         isMaybe -> Maybe.fromCallable(callable).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-        isCompletable -> Completable.fromCallable(callable).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        isCompletable -> Completable.complete().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
         else -> throw IllegalArgumentException("Unsupported type")
       }
     }
 
     override fun responseType(): Type {
-      return apiResultType
+      return if (isCompletable) Unit::class.java else apiResultType!!
     }
   }
 
