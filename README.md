@@ -72,7 +72,7 @@ interface GithubApi {
   }
 
   @GET("/search/users")
-  fun getUsers(@Query("q") query: String): Observable<List<User>>
+  fun getUsers(@Query("q") query: String): Single<List<User>>
 
 }
 ````
@@ -115,7 +115,7 @@ And you only want the `items` part, use `@KeyPathResponse("keypath")` annotation
 ```kotlin
 @GET("/search/users")
 @KeyPathResponse("foo.bar.items")
-fun getUsers(@Query("q") query: String): Observable<List<User>>
+fun getUsers(@Query("q") query: String): Single<List<User>>
 ```
 
 Similarly, unwrap the error response by setting the `errorMessageKeyPath` of `SimpleApiClient.Config`
@@ -130,7 +130,7 @@ class ApiResult<T: Any>: SimpleApiResult<T> {
 
 @GET("/search/users")
 @WrappedResponse(ApiResult::class)
-fun getUsers(@Query("q") query: String): Observable<List<User>>
+fun getUsers(@Query("q") query: String): Single<List<User>>
 ```
 
 ## <a name=serial_parallel_calls>Serial / Concurrent Calls</a>
